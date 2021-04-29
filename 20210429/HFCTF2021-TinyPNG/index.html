@@ -215,7 +215,6 @@
     <h2 id="HFCTF2021-TinyPNG"><a href="#HFCTF2021-TinyPNG" class="headerlink" title="HFCTF2021 TinyPNG"></a>HFCTF2021 TinyPNG</h2><p>感谢 Naivekun 师傅的帮助</p>
 <p>因为题目没有给全环境，所以自己 docker 搭了个环境，和 Buu 上的好像不太一样，回头再研究</p>
 <p>docker 环境我会放在我的 GitHub 上，<a target="_blank" rel="noopener" href="https://github.com/ChrisLiKaiyuan/HFCTF2021_TinyPNG">复现环境</a></p>
-<p>[TOC]</p>
 <h3 id="修洞"><a href="#修洞" class="headerlink" title="修洞"></a>修洞</h3><p>先看路由 <code>routes/web.php</code></p>
 <pre class="highlight"><span class="line">Route::get(<span class="string">&#x27;/&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> view(<span class="string">&#x27;upload&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">Route::post(<span class="string">&#x27;/&#x27;</span>, [IndexController::class, <span class="string">&#x27;fileUpload&#x27;</span>])-&gt;name(<span class="string">&#x27;file.upload.post&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Don&#x27;t expose the /image to others!</span></span><br><span class="line">Route::get(<span class="string">&#x27;/image&#x27;</span>, [ImageController::class, <span class="string">&#x27;handle&#x27;</span>])-&gt;name(<span class="string">&#x27;image.handle&#x27;</span>);</span><br><span class="line"></span><br></pre>
 
