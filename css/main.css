@@ -148,7 +148,7 @@ kbd {
   color: var(--code-color);
   background-color: var(--code-background-color);
   margin: auto 0.2rem;
-  padding: 0.2rem 0.3rem 0.2rem;
+  padding: 0rem 0.1rem 0rem 0.1rem;
   overflow-wrap: break-word;
   word-wrap: break-word;
   border-radius: 0.25rem;
