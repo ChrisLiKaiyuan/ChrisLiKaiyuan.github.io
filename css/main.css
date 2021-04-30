@@ -223,7 +223,7 @@ pre {
   --pre-color: #2d2d2d;
   --tbody-background-color: #f4f5f7;
   --code-color: #50687c;
-  --code-background-color: #e9eaf0;
+  --code-background-color: #f5f5f5;
   --blue-tag-color: #3273dc;
   --blockquote-color: #f9f8f7;
   --note-primary-border-color: #428bca;
@@ -266,7 +266,7 @@ pre {
     --pre-color: #3c495b;
     --tbody-background-color: #3c495b;
     --code-color: #c3c7cb;
-    --code-background-color: #3e4b5e;
+    --code-background-color: #262729;
     --blue-tag-color: $dark-blue-tag-color;
     --blockquote-color: #181c27;
     --note-primary-border-color: #0c2760;
@@ -302,7 +302,7 @@ pre {
   --pre-color: #3c495b;
   --tbody-background-color: #3c495b;
   --code-color: #c3c7cb;
-  --code-background-color: #3e4b5e;
+  --code-background-color: #262729;
   --blue-tag-color: $dark-blue-tag-color;
   --blockquote-color: #181c27;
   --note-primary-border-color: #0c2760;
