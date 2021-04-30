@@ -444,10 +444,10 @@
 
 <p>1、通过 <code>ImportConfigurator</code> 类的 <code>__destruct</code> 方法触发 <code>ValidGenerator</code> 类的 <code>__call</code> 方法</p>
 <p>2、<code>ValidGenerator</code> 类的 <code>__call</code> 方法中的 <code>call_user_func_array</code> 函数</p>
-<p>​        触发 <code>DefaultGenerator</code> 类的 <code>__call</code> 方法</p>
-<p>3、<code>DefaultGenerator</code> 类的 <code>__call</code> 方法返回值完全可控，</p>
-<p>​        即<code>ValidGenerator</code> 类的 <code>__call</code> 方法中的 <code>call_user_func_array</code> 函数返回值 <code>$res</code> 可控</p>
-<p>4、<code>ValidGenerator</code> 类的 <code>__call</code> 方法中 <code>call_user_func</code> 函数的两个参数都可控</p>
+<p>3、触发 <code>DefaultGenerator</code> 类的 <code>__call</code> 方法</p>
+<p>4、<code>DefaultGenerator</code> 类的 <code>__call</code> 方法返回值完全可控</p>
+<p>5、<code>ValidGenerator</code> 类的 <code>__call</code> 方法中的 <code>call_user_func_array</code> 函数返回值 <code>$res</code> 可控</p>
+<p>6、<code>ValidGenerator</code> 类的 <code>__call</code> 方法中 <code>call_user_func</code> 函数的两个参数都可控</p>
 <p>条件梳理</p>
 <ul>
 <li><code>ImportConfigurator-&gt;parent</code> = <code>ValidGenerator 类</code></li>
