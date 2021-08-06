@@ -206,7 +206,8 @@
   
     <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
   
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Liki4" type="application/atom+xml">
+</head>
 
   <body>
     <div class="wrapper">
@@ -376,9 +377,9 @@
 
 <span class="token keyword">use</span> <span class="token package">Illuminate<span class="token punctuation">\</span>Http<span class="token punctuation">\</span>Request</span><span class="token punctuation">;</span>
 
-<span class="token keyword">class</span> <span class="token class-name">IndexController</span> <span class="token keyword">extends</span> <span class="token class-name">Controller</span>
+<span class="token keyword">class</span> <span class="token class-name-definition class-name">IndexController</span> <span class="token keyword">extends</span> <span class="token class-name">Controller</span>
 <span class="token punctuation">&#123;</span>
-    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">fileUpload</span><span class="token punctuation">(</span><span class="token class-name type-declaration">Request</span> <span class="token variable">$req</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">fileUpload</span><span class="token punctuation">(</span><span class="token class-name type-declaration">Request</span> <span class="token variable">$req</span><span class="token punctuation">)</span>
     <span class="token punctuation">&#123;</span>
         <span class="token variable">$allowed_extension</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"png"</span><span class="token punctuation">;</span>
         <span class="token variable">$extension</span> <span class="token operator">=</span> <span class="token variable">$req</span><span class="token operator">-></span><span class="token function">file</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'file'</span><span class="token punctuation">)</span><span class="token operator">-></span><span class="token function">clientExtension</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -390,7 +391,7 @@
                 <span class="token keyword">return</span> <span class="token function">back</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
                     <span class="token operator">-></span><span class="token function">withErrors</span><span class="token punctuation">(</span><span class="token variable">$error</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token punctuation">&#125;</span><span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
-                <span class="token variable">$fileName</span> <span class="token operator">=</span> \<span class="token function">md5</span><span class="token punctuation">(</span><span class="token function">time</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">.</span> <span class="token string single-quoted-string">'.png'</span><span class="token punctuation">;</span>
+                <span class="token variable">$fileName</span> <span class="token operator">=</span> <span class="token function"><span class="token punctuation">\</span>md5</span><span class="token punctuation">(</span><span class="token function">time</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">.</span> <span class="token string single-quoted-string">'.png'</span><span class="token punctuation">;</span>
                 <span class="token variable">$path</span> <span class="token operator">=</span> <span class="token variable">$req</span><span class="token operator">-></span><span class="token function">file</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'file'</span><span class="token punctuation">)</span><span class="token operator">-></span><span class="token function">storePubliclyAs</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'uploads'</span><span class="token punctuation">,</span> <span class="token variable">$fileName</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
                 <span class="token keyword">echo</span> <span class="token string double-quoted-string">"path: <span class="token interpolation"><span class="token variable">$path</span></span>"</span><span class="token punctuation">;</span>
                 <span class="token keyword">return</span> <span class="token function">back</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
@@ -426,9 +427,9 @@
 
 <span class="token keyword">use</span> <span class="token package">Illuminate<span class="token punctuation">\</span>Http<span class="token punctuation">\</span>Request</span><span class="token punctuation">;</span>
 
-<span class="token keyword">class</span> <span class="token class-name">ImageController</span> <span class="token keyword">extends</span> <span class="token class-name">Controller</span>
+<span class="token keyword">class</span> <span class="token class-name-definition class-name">ImageController</span> <span class="token keyword">extends</span> <span class="token class-name">Controller</span>
 <span class="token punctuation">&#123;</span>
-    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">handle</span><span class="token punctuation">(</span><span class="token class-name type-declaration">Request</span> <span class="token variable">$request</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">handle</span><span class="token punctuation">(</span><span class="token class-name type-declaration">Request</span> <span class="token variable">$request</span><span class="token punctuation">)</span>
     <span class="token punctuation">&#123;</span>
         <span class="token variable">$source</span> <span class="token operator">=</span> <span class="token variable">$request</span><span class="token operator">-></span><span class="token function">input</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'image'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token keyword">empty</span><span class="token punctuation">(</span><span class="token variable">$source</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
@@ -462,14 +463,14 @@
 
 <span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
 
-<span class="token keyword">class</span> <span class="token class-name">imgcompress</span>
+<span class="token keyword">class</span> <span class="token class-name-definition class-name">imgcompress</span>
 <span class="token punctuation">&#123;</span>
 	<span class="token comment">//...</span>
     
 	<span class="token comment">/**
      * 内部：打开图片
      */</span>
-    <span class="token keyword">private</span> <span class="token keyword">function</span> <span class="token function">_openImage</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> <span class="token keyword">function</span> <span class="token function-definition function">_openImage</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
     <span class="token punctuation">&#123;</span>
         <span class="token keyword">list</span><span class="token punctuation">(</span><span class="token variable">$width</span><span class="token punctuation">,</span> <span class="token variable">$height</span><span class="token punctuation">,</span> <span class="token variable">$type</span><span class="token punctuation">,</span> <span class="token variable">$attr</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">getimagesize</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-></span><span class="token property">src</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">imageinfo</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span>
@@ -522,13 +523,13 @@
 <p>这样我们可以控制 <code>$this-&gt;xxx</code>，从而执行一些预期之外的方法</p>
 <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment"># vendor/symfony/routing/Loader/Configurator/ImportConfigurator.php</span>
 
-<span class="token keyword">class</span> <span class="token class-name">ImportConfigurator</span>
+<span class="token keyword">class</span> <span class="token class-name-definition class-name">ImportConfigurator</span>
 <span class="token punctuation">&#123;</span>
     <span class="token keyword">private</span> <span class="token variable">$parent</span><span class="token punctuation">;</span>
     <span class="token comment">//...</span>
-    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">__destruct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">__destruct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
         <span class="token punctuation">&#123;</span>
-            <span class="token variable">$this</span><span class="token operator">-></span><span class="token keyword">parent</span><span class="token operator">-></span><span class="token function">addCollection</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-></span><span class="token property">route</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">parent</span><span class="token operator">-></span><span class="token function">addCollection</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-></span><span class="token property">route</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">&#125;</span>
     <span class="token comment">//...</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
@@ -537,13 +538,13 @@
 <p>比如说 <code>Faker</code> 中的类 <code>ValidGenerator</code></p>
 <h3 id="ValidGenerator-类"><a href="#ValidGenerator-类" class="headerlink" title="ValidGenerator 类"></a>ValidGenerator 类</h3><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment"># vendor/fakephp/faker/src/Faker/ValidGenerator.php</span>
 
-<span class="token keyword">class</span> <span class="token class-name">ValidGenerator</span>
+<span class="token keyword">class</span> <span class="token class-name-definition class-name">ValidGenerator</span>
 <span class="token punctuation">&#123;</span>
     <span class="token keyword">protected</span> <span class="token variable">$generator</span><span class="token punctuation">;</span>
     <span class="token keyword">protected</span> <span class="token variable">$validator</span><span class="token punctuation">;</span>
     <span class="token keyword">protected</span> <span class="token variable">$maxRetries</span><span class="token punctuation">;</span>
     <span class="token comment">//...</span>
-    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">__call</span><span class="token punctuation">(</span><span class="token variable">$name</span><span class="token punctuation">,</span> <span class="token variable">$arguments</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">__call</span><span class="token punctuation">(</span><span class="token variable">$name</span><span class="token punctuation">,</span> <span class="token variable">$arguments</span><span class="token punctuation">)</span>
         <span class="token punctuation">&#123;</span>
             <span class="token variable">$i</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
             <span class="token keyword">do</span> <span class="token punctuation">&#123;</span>
@@ -570,13 +571,13 @@
 <h3 id="DefaultGenerator-类"><a href="#DefaultGenerator-类" class="headerlink" title="DefaultGenerator 类"></a>DefaultGenerator 类</h3><p>我们再看到 <code>Faker</code> 中的类 <code>DefaultGenerator</code></p>
 <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment"># vendor/fakephp/faker/src/Faker/DefaultGenerator.php</span>
 
-<span class="token keyword">class</span> <span class="token class-name">DefaultGenerator</span>
+<span class="token keyword">class</span> <span class="token class-name-definition class-name">DefaultGenerator</span>
 <span class="token punctuation">&#123;</span>
     <span class="token keyword">protected</span> <span class="token variable">$default</span><span class="token punctuation">;</span>
 	<span class="token comment">//...</span>
-	<span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">__call</span><span class="token punctuation">(</span><span class="token variable">$method</span><span class="token punctuation">,</span> <span class="token variable">$attributes</span><span class="token punctuation">)</span>
+	<span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">__call</span><span class="token punctuation">(</span><span class="token variable">$method</span><span class="token punctuation">,</span> <span class="token variable">$attributes</span><span class="token punctuation">)</span>
     	<span class="token punctuation">&#123;</span>
-        	<span class="token keyword">return</span> <span class="token variable">$this</span><span class="token operator">-></span><span class="token keyword">default</span><span class="token punctuation">;</span>
+        	<span class="token keyword">return</span> <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">default</span><span class="token punctuation">;</span>
     	<span class="token punctuation">&#125;</span>
     <span class="token comment">//...</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
@@ -586,17 +587,17 @@
 <h3 id="调用链"><a href="#调用链" class="headerlink" title="调用链"></a>调用链</h3><p>梳理一下调用链</p>
 <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
 
-<span class="token keyword">class</span> <span class="token class-name">ImportConfigurator</span>
+<span class="token keyword">class</span> <span class="token class-name-definition class-name">ImportConfigurator</span>
 <span class="token punctuation">&#123;</span>
-    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">__destruct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">__destruct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
     <span class="token punctuation">&#123;</span>
-        <span class="token variable">$this</span><span class="token operator">-></span><span class="token keyword">parent</span><span class="token operator">-></span><span class="token function">addCollection</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-></span><span class="token property">route</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">parent</span><span class="token operator">-></span><span class="token function">addCollection</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-></span><span class="token property">route</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span>
 
-<span class="token keyword">class</span> <span class="token class-name">ValidGenerator</span>
+<span class="token keyword">class</span> <span class="token class-name-definition class-name">ValidGenerator</span>
 <span class="token punctuation">&#123;</span>
-    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">__call</span><span class="token punctuation">(</span><span class="token variable">$name</span><span class="token punctuation">,</span> <span class="token variable">$arguments</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">__call</span><span class="token punctuation">(</span><span class="token variable">$name</span><span class="token punctuation">,</span> <span class="token variable">$arguments</span><span class="token punctuation">)</span>
     <span class="token punctuation">&#123;</span>
         <span class="token variable">$i</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
         <span class="token keyword">do</span> <span class="token punctuation">&#123;</span>
@@ -611,11 +612,11 @@
     <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span>
 
-<span class="token keyword">class</span> <span class="token class-name">DefaultGenerator</span>
+<span class="token keyword">class</span> <span class="token class-name-definition class-name">DefaultGenerator</span>
 <span class="token punctuation">&#123;</span>
-    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">__call</span><span class="token punctuation">(</span><span class="token variable">$method</span><span class="token punctuation">,</span> <span class="token variable">$attributes</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">__call</span><span class="token punctuation">(</span><span class="token variable">$method</span><span class="token punctuation">,</span> <span class="token variable">$attributes</span><span class="token punctuation">)</span>
         <span class="token punctuation">&#123;</span>
-            <span class="token keyword">return</span> <span class="token variable">$this</span><span class="token operator">-></span><span class="token keyword">default</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">default</span><span class="token punctuation">;</span>
         <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
@@ -650,25 +651,25 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
 <h3 id="EXP"><a href="#EXP" class="headerlink" title="EXP"></a>EXP</h3><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
 
 <span class="token keyword">namespace</span> <span class="token package">Symfony<span class="token punctuation">\</span>Component<span class="token punctuation">\</span>Routing<span class="token punctuation">\</span>Loader<span class="token punctuation">\</span>Configurator</span><span class="token punctuation">&#123;</span>
-    <span class="token keyword">class</span> <span class="token class-name">ImportConfigurator</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">class</span> <span class="token class-name-definition class-name">ImportConfigurator</span><span class="token punctuation">&#123;</span>
         <span class="token keyword">private</span> <span class="token variable">$parent</span><span class="token punctuation">;</span>
-        <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token variable">$c1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-            <span class="token variable">$this</span><span class="token operator">-></span><span class="token keyword">parent</span> <span class="token operator">=</span> <span class="token variable">$c1</span><span class="token punctuation">;</span>
+        <span class="token keyword">function</span> <span class="token function-definition function">__construct</span><span class="token punctuation">(</span><span class="token variable">$c1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">parent</span> <span class="token operator">=</span> <span class="token variable">$c1</span><span class="token punctuation">;</span>
         <span class="token punctuation">&#125;</span>
     <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span>
 <span class="token keyword">namespace</span> <span class="token package">Faker</span><span class="token punctuation">&#123;</span>
-    <span class="token keyword">class</span> <span class="token class-name">DefaultGenerator</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">class</span> <span class="token class-name-definition class-name">DefaultGenerator</span><span class="token punctuation">&#123;</span>
         <span class="token keyword">protected</span> <span class="token variable">$default</span><span class="token punctuation">;</span>
-        <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token variable">$param</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-            <span class="token variable">$this</span><span class="token operator">-></span><span class="token keyword">default</span> <span class="token operator">=</span> <span class="token variable">$param</span><span class="token punctuation">;</span>
+        <span class="token keyword">function</span> <span class="token function-definition function">__construct</span><span class="token punctuation">(</span><span class="token variable">$param</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">default</span> <span class="token operator">=</span> <span class="token variable">$param</span><span class="token punctuation">;</span>
         <span class="token punctuation">&#125;</span>
     <span class="token punctuation">&#125;</span>
-    <span class="token keyword">class</span> <span class="token class-name">ValidGenerator</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">class</span> <span class="token class-name-definition class-name">ValidGenerator</span><span class="token punctuation">&#123;</span>
         <span class="token keyword">protected</span> <span class="token variable">$generator</span><span class="token punctuation">;</span>
         <span class="token keyword">protected</span> <span class="token variable">$validator</span><span class="token punctuation">;</span>
         <span class="token keyword">protected</span> <span class="token variable">$maxRetries</span><span class="token punctuation">;</span>
-        <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token variable">$func</span><span class="token punctuation">,</span><span class="token variable">$param</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">function</span> <span class="token function-definition function">__construct</span><span class="token punctuation">(</span><span class="token variable">$func</span><span class="token punctuation">,</span><span class="token variable">$param</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
             <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">generator</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DefaultGenerator</span><span class="token punctuation">(</span><span class="token variable">$param</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">maxRetries</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
             <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">validator</span> <span class="token operator">=</span> <span class="token variable">$func</span><span class="token punctuation">;</span>
@@ -712,11 +713,11 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
 <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
 
 <span class="token keyword">namespace</span> <span class="token package">Illuminate<span class="token punctuation">\</span>Bus</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">class</span> <span class="token class-name">Dispatcher</span>
+    <span class="token keyword">class</span> <span class="token class-name-definition class-name">Dispatcher</span>
     <span class="token punctuation">&#123;</span>
         <span class="token keyword">protected</span> <span class="token variable">$queueResolver</span><span class="token punctuation">;</span>
 
-        <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">function</span> <span class="token function-definition function">__construct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
         <span class="token punctuation">&#123;</span>
             <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">queueResolver</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">new</span> <span class="token class-name class-name-fully-qualified"><span class="token punctuation">\</span>Mockery<span class="token punctuation">\</span>Loader<span class="token punctuation">\</span>EvalLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'load'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
         <span class="token punctuation">&#125;</span>
@@ -724,23 +725,23 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
 <span class="token punctuation">&#125;</span>
 
 <span class="token keyword">namespace</span> <span class="token package">Illuminate<span class="token punctuation">\</span>Broadcasting</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">class</span> <span class="token class-name">PendingBroadcast</span>
+    <span class="token keyword">class</span> <span class="token class-name-definition class-name">PendingBroadcast</span>
     <span class="token punctuation">&#123;</span>
         <span class="token keyword">protected</span> <span class="token variable">$events</span><span class="token punctuation">;</span>
         <span class="token keyword">protected</span> <span class="token variable">$event</span><span class="token punctuation">;</span>
 
-        <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token variable">$evilCode</span><span class="token punctuation">)</span>
+        <span class="token keyword">function</span> <span class="token function-definition function">__construct</span><span class="token punctuation">(</span><span class="token variable">$evilCode</span><span class="token punctuation">)</span>
         <span class="token punctuation">&#123;</span>
             <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">events</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name class-name-fully-qualified"><span class="token punctuation">\</span>Illuminate<span class="token punctuation">\</span>Bus<span class="token punctuation">\</span>Dispatcher</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">event</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BroadcastEvent</span><span class="token punctuation">(</span><span class="token variable">$evilCode</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">&#125;</span>
     <span class="token punctuation">&#125;</span>
 
-    <span class="token keyword">class</span> <span class="token class-name">BroadcastEvent</span>
+    <span class="token keyword">class</span> <span class="token class-name-definition class-name">BroadcastEvent</span>
     <span class="token punctuation">&#123;</span>
         <span class="token keyword">public</span> <span class="token variable">$connection</span><span class="token punctuation">;</span>
 
-        <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token variable">$evilCode</span><span class="token punctuation">)</span>
+        <span class="token keyword">function</span> <span class="token function-definition function">__construct</span><span class="token punctuation">(</span><span class="token variable">$evilCode</span><span class="token punctuation">)</span>
         <span class="token punctuation">&#123;</span>
             <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">connection</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name class-name-fully-qualified"><span class="token punctuation">\</span>Mockery<span class="token punctuation">\</span>Generator<span class="token punctuation">\</span>MockDefinition</span><span class="token punctuation">(</span><span class="token variable">$evilCode</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">&#125;</span>
@@ -749,12 +750,12 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
 <span class="token punctuation">&#125;</span>
 
 <span class="token keyword">namespace</span> <span class="token package">Illuminate<span class="token punctuation">\</span>Support</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">class</span> <span class="token class-name">MessageBag</span>
+    <span class="token keyword">class</span> <span class="token class-name-definition class-name">MessageBag</span>
     <span class="token punctuation">&#123;</span>
         <span class="token keyword">protected</span> <span class="token variable">$messages</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
         <span class="token keyword">protected</span> <span class="token variable">$format</span><span class="token punctuation">;</span>
 
-        <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token variable">$inner</span><span class="token punctuation">)</span>
+        <span class="token keyword">function</span> <span class="token function-definition function">__construct</span><span class="token punctuation">(</span><span class="token variable">$inner</span><span class="token punctuation">)</span>
         <span class="token punctuation">&#123;</span>
             <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">format</span> <span class="token operator">=</span> <span class="token variable">$inner</span><span class="token punctuation">;</span>
         <span class="token punctuation">&#125;</span>
@@ -762,25 +763,25 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
 <span class="token punctuation">&#125;</span>
 
 <span class="token keyword">namespace</span> <span class="token package">Mockery<span class="token punctuation">\</span>Loader</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">class</span> <span class="token class-name">EvalLoader</span>
+    <span class="token keyword">class</span> <span class="token class-name-definition class-name">EvalLoader</span>
     <span class="token punctuation">&#123;</span>
     <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span>
 
 <span class="token keyword">namespace</span> <span class="token package">Mockery<span class="token punctuation">\</span>Generator</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">class</span> <span class="token class-name">MockDefinition</span>
+    <span class="token keyword">class</span> <span class="token class-name-definition class-name">MockDefinition</span>
     <span class="token punctuation">&#123;</span>
         <span class="token keyword">protected</span> <span class="token variable">$config</span><span class="token punctuation">;</span>
         <span class="token keyword">protected</span> <span class="token variable">$code</span><span class="token punctuation">;</span>
 
-        <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token variable">$evilCode</span><span class="token punctuation">)</span>
+        <span class="token keyword">function</span> <span class="token function-definition function">__construct</span><span class="token punctuation">(</span><span class="token variable">$evilCode</span><span class="token punctuation">)</span>
         <span class="token punctuation">&#123;</span>
             <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">code</span> <span class="token operator">=</span> <span class="token variable">$evilCode</span><span class="token punctuation">;</span>
             <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">config</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MockConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">&#125;</span>
     <span class="token punctuation">&#125;</span>
 
-    <span class="token keyword">class</span> <span class="token class-name">MockConfiguration</span>
+    <span class="token keyword">class</span> <span class="token class-name-definition class-name">MockConfiguration</span>
     <span class="token punctuation">&#123;</span>
         <span class="token keyword">protected</span> <span class="token variable">$name</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'abcdefg'</span><span class="token punctuation">;</span>
     <span class="token punctuation">&#125;</span>
@@ -836,20 +837,20 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
 </article>
 <div class="nav">
   
-  
-    <div class="nav-item-next">
+    <div class="nav-item-prev">
       <a 
-        href="/20201007/hello-world/" 
+        href="/20210610/hello-world/" 
         class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
         <div>
-          <div class="nav-label">下一篇</div>
+          <div class="nav-label">上一篇</div>
           
             <div class="nav-title">Hello World </div>
           
         </div>
-        <i class="iconfont icon-right nav-next-icon"></i>
       </a>
     </div>
+  
   
 </div>
 
@@ -872,9 +873,9 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
     var gitalk = new Gitalk({
       clientID: '032224fa703e5abb2a29',
       clientSecret: '273bb31dd3a59b6a1ebc4b4e151feb7eb86f801e',
-      repo: 'ChrisLiKaiyuan.github.io',
-      owner: 'ChrisLiKaiyuan',
-      admin: ["ChrisLiKaiyuan"],
+      repo: 'Liki4.github.io',
+      owner: 'Liki4',
+      admin: ["Liki4"],
       id: md5(location.pathname),
       distractionFreeMode: false,
       language: 'navigator.language || navigator.userLanguage',
@@ -933,7 +934,7 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
   <div class="author-card-society">
     
       <div class="author-card-society-icon">
-        <a target="_blank" rel="noopener" href="https://github.com/ChrisLiKaiyuan">
+        <a target="_blank" rel="noopener" href="https://github.com/Liki4">
           <i class="iconfont icon-github society-icon"></i>
         </a>
       </div>
@@ -1026,13 +1027,13 @@ O:64:"Symfony\Component\Routing\Loader\Configurator\ImportConfigurator":1:&#123;
   <div class="recent-posts-list">
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2021-04-29</div>
-        <a href="/20210429/HFCTF2021-TinyPNG/"><div class="recent-posts-item-content">HFCTF2021 TinyPNG 复现</div></a>
+        <div class="recent-posts-item-title">2021-06-10</div>
+        <a href="/20210610/hello-world/"><div class="recent-posts-item-content">Hello World</div></a>
       </div>
     
       <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2020-10-07</div>
-        <a href="/20201007/hello-world/"><div class="recent-posts-item-content">Hello World</div></a>
+        <div class="recent-posts-item-title">2021-04-29</div>
+        <a href="/20210429/HFCTF2021-TinyPNG/"><div class="recent-posts-item-content">HFCTF2021 TinyPNG 复现</div></a>
       </div>
     
   </div>
