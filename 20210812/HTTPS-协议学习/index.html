@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+  <meta charset="UTF-8">
+  <meta
+    name="google-site-verification"
+    content="SOV2AQ5p6fuPfuCqmBECQgKXvyh9SKgTVxmNEVrLvqE" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta
+    http-equiv="X-UA-Compatible"
+    content="ie=edge">
+  <meta
+    name="theme-color"
+    content="#fff"
+    id="theme-color">
+  <meta
+    name="description"
+    content="HDU | Vidar-Team | Web">
+  <link
+    rel="icon"
+    href="/img/Liki4.jpg">
+  <title>HTTPS 协议学习</title>
+  
+    
+      <meta
+        property="og:title"
+        content="HTTPS 协议学习">
+    
+    
+      <meta
+        property="og:url"
+        content="https://me.liki.link/20210812/HTTPS-%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/index.html">
+    
+    
+      <meta
+        property="og:img"
+        content="/img/Liki4.jpg">
+    
+    
+      <meta
+        property="og:img"
+        content="HDU | Vidar-Team | Web">
+    
+    
+      <meta
+        property="og:type"
+        content="article">
+      <meta
+        property="og:article:published_time"
+        content="2021-08-12">
+      <meta
+        property="og:article:modified_time"
+        content="2021-10-18">
+      <meta
+        property="og:article:author"
+        content="Switch">
+      
+        
+      
+    
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-twilight.min.css', '[data-prism]', 'prism-twilight');
+              } else {
+                loadCSS('/js/lib/prism/prism-twilight.min.css', 'prism', 'prism-twilight');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism.min.css', '[data-prism]', 'prism');
+              } else {
+                loadCSS('/js/lib/prism/prism.min.css', 'prism', 'prism');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Liki4" type="application/atom+xml">
+</head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <span class="navbar-logo-main">
+      
+        <img 
+          class="navbar-logo-img" 
+          src="/img/Liki4.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">Liki4</span>
+    </span>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          首页
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          归档
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          标签
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          分类
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          关于
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          友链
+        
+      </a>
+    
+    <a 
+      class="navbar-menu-item darknavbar" 
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </a>
+    <a 
+      class="navbar-menu-item searchnavbar" 
+      id="search">
+      <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i>
+    </a>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <main class="main-column">
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      HTTPS 协议学习
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2021-08-12T04:11:32.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2021-08-12</span>
+    </time>
+    
+    
+      <span class="dot"></span>
+      <span>5.7k 字</span>
+    
+  </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前实习面试之前去参考了 Annevi 的博客，</p>
+<p>发现了很多很棒的记录，</p>
+<p>打算转载一些</p>
+<h2 id="什么是https？"><a href="#什么是https？" class="headerlink" title="什么是https？"></a>什么是https？</h2><p>https协议(Hyper Text Transfer Protocol over SecureSocket Layer)，翻译过来就是<code>建立在安全套接字层上的超文本传输协议(http)</code>，很显然，https是为了确保http协议的安全性而出现的。https在http的基础上加入了<code>SSL</code>协议(SSL3.1后称TLS)以下均称TLS，通过<code>TLS</code>协议使得http数据包能够安全的在网络中进行传输。现在大多数的站点都已经使用了https协议进行通信，也就是在浏览器中看到的所谓的<code>小绿锁</code>🔐。</p>
+<p><img src="https://cdn.annevi.cn/image-20210202142221315.png" alt="image-20210202142221315" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20210202142221315.png" class="lozad post-image"></p>
+<h2 id="为什么需要https？"><a href="#为什么需要https？" class="headerlink" title="为什么需要https？"></a>为什么需要https？</h2><p>通过上面的介绍可以知道，使用https是为了确保http通道的安全性，那么这个安全性究竟体现在哪里呢？</p>
+<p>在说https所解决的安全问题之前，我们首先需要了解一种攻击手法: <code>中间人攻击</code></p>
+<blockquote>
+<p><strong>中间人攻击</strong>（英语：<strong>M</strong>an-<strong>i</strong>n-<strong>t</strong>he-<strong>m</strong>iddle attack，缩写：<strong>MITM</strong>）在<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%AF%86%E7%A0%81%E5%AD%A6">密码学</a>和<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AE%89%E5%85%A8">计算机安全</a>领域中是指攻击者与通讯的两端分别创建独立的联系，并交换其所收到的数据，使通讯的两端认为他们正在通过一个私密的连接与对方直接对话，但事实上整个会话都被攻击者完全控制。在中间人攻击中，攻击者可以拦截通讯双方的通话并插入新的内容。</p>
+</blockquote>
+<p>从上述资料中可以知道，中间人攻击实际上就是攻击者监听并截获了通信双方的数据，对这些数据加以修改后代替原有的发送方将修改后的信息发送给原先的接收方，在这个过程中，中间人就相当于是一个”透明代理“，通信双方并不知道有这个”中间人“的存在。</p>
+<p>而要成功的进行中间人攻击是有条件的：</p>
+<blockquote>
+<p>一个中间人攻击能成功的前提条件是攻击者能将自己伪装成每一个参与会话的终端，并且不被其他终端识破。中间人攻击是一个（缺乏）相互<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%AE%A4%E8%AF%81">认证</a>的攻击。</p>
+</blockquote>
+<p>回到http数据包网络通信过程中，我们知道http协议的数据是在传输层通过TCP协议进行封装传输的，而TCP协议在传输的过程中则是以明文形式进行的，也就是在http数据包在网络中明文”裸奔”。</p>
+<p><img src="https://cdn.annevi.cn/http.png" alt="http" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/http.png" class="lozad post-image"></p>
+<p>TCP协议虽确保了通信双方的<code>可靠交付</code>但是并没有对通信双方进行<code>身份认证</code>，也就是说，http客户端并不知道与自己通信的是不是想要访问的”真实”服务端，因此就给中间人攻击提供了机会。</p>
+<p>由于HTTP存在被中间人攻击的问题，人们在思考如何解决这一安全问题的时候提出了https协议，https协议通过SSL层对http数据包进行加密，同时使用数字证书等手段对通信双方的身份进行验证，较好的解决了这一安全问题。</p>
+<h2 id="https具体工作过程"><a href="#https具体工作过程" class="headerlink" title="https具体工作过程"></a>https具体工作过程</h2><p>通过上面的介绍可以知道，https是将http协议通过TLS的封装后的一种安全协议。http与https在网络传输过程中的基本结构如下</p>
+<p><img src="https://cdn.annevi.cn/image-20210202164732706.png" alt="img" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20210202164732706.png" class="lozad post-image"></p>
+<p>https协议在传输的过程中首先将http原始请求包经过TLS层进行加密封装再送入传输层进行TCP传输。</p>
+<h3 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h3><p>在介绍https工作原理之前，我们需要简单的了解一些密码学的基础知识</p>
+<h4 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h4><blockquote>
+<p>对称加密是最快速、最简单的一种加密方式，加密（encryption）与解密（decryption）用的是同样的密钥（secret key）。</p>
+</blockquote>
+<p>对称加密其特点主要是效率高、速度快，但是安全性差，由于加解密使用相同的密钥，因此密钥管理负担较重。主要算法有DES、3DES、AES、RC5、RC6等。</p>
+<h4 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h4><blockquote>
+<p>非对称加密加、解密使用不同的密钥，一把作为公开的公钥，另一把作为私钥。公钥加密的信息，只有私钥才能解密。反之，私钥加密的信息，只有公钥才能解密。</p>
+</blockquote>
+<p>非对称加密由于其加解密密钥不同而得名，其安全性更高，密钥管理方便。但是加密和解密耗时长，效率差。</p>
+<p>与对称加密相比，非对称加密无需在客户端和服务端之间共享密钥，只要私钥不发送给任何用户，即是公钥在互联网上被截获，也无法被解密，而只有公钥是没有任何攻击价值的。常见的非对称加密算法有RSA等，非对称加解密过程：</p>
+<ol>
+<li>服务端生成一堆公钥和私钥</li>
+<li>私钥仅由服务端保存，公钥通过互联网发送给客户端。</li>
+<li>客户端使用公钥加密明文并在网络中传输给服务端</li>
+<li>服务端使用自己持有的私钥解密密文得到对应的明文</li>
+</ol>
+<h4 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h4><p>在一封信中，文末的签名是为了表示这封信是签名者写的。计算机中，数字签名也是相同的含义：证明消息是某个特定的人，而不是随随便便一个人发送的（有效性）；除此之外，数字签名还能证明消息没有被篡改（完整性）。</p>
+<blockquote>
+<p>简单来说，数字签名（digital signature）是公钥密码的逆应用：用<strong>私钥</strong>加密消息，用<strong>公钥</strong>解密消息。</p>
+<p>用私钥加密的消息称为<strong>签名</strong>，只有拥有私钥的用户可以生成签名。<br>用公钥解密签名这一步称为<strong>验证签名</strong>，所有用户都可以验证签名(因为公钥是公开的)</p>
+</blockquote>
+<p>签名的生成，一般来说，不直接对消息进行签名，而是对消息的哈希值进行签名，步骤如下。</p>
+<ol>
+<li>对消息进行哈希计算，得到哈希值</li>
+<li>利用私钥对哈希值进行加密，生成签名</li>
+<li>将签名附加在消息后面，一起发送过去</li>
+</ol>
+<p>签名的验证</p>
+<ol>
+<li>收到消息后，提取消息中的签名</li>
+<li>用公钥对签名进行解密，得到哈希值1。</li>
+<li>对消息中的正文进行哈希计算，得到哈希值2。</li>
+<li>比较哈希值1和哈希值2，如果相同，则验证成功。</li>
+</ol>
+<p><strong>简单地说，数字签名就是使用<code>私钥</code>去加密<code>消息摘要</code>得到的密文。</strong></p>
+<h4 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h4><p>证书实际上就是对<strong>公钥</strong>进行数字签名，它是对公钥合法性提供证明的技术。</p>
+<blockquote>
+<p>数字证书是指在互联网通讯中标志通讯各方身份信息的一个数字认证，人们可以在网上用它来识别对方的身份。数字证书对网络用户在计算机网络交流中的信息和数据等以加密或解密的形式保证了信息和数据的完整性和安全性。</p>
+</blockquote>
+<p>考虑这样一种场景：我们对签名进行验证时，需要用到公钥。如果公钥也是伪造的，那怎么办？如果公钥是假的，验证数字签名那就无从谈起，根本不可能从数字签名确定对方的合法性。</p>
+<p>在非对称加密通信过程中，服务器需要将公钥发送给客户端，在这一过程中，公钥很可能会被第三方拦截并替换，然后这个第三方就可以冒充服务器与客户端进行通信，这就是传说中的“中间人攻击”(man in the middle attack)。解决此问题的方法是通过受信任的第三方交换公钥，具体做法就是服务器不直接向客户端发送公钥，而是要求受信任的第三方，也就是证书认证机构 (Certificate Authority, 简称 CA)将公钥合并到数字证书中，然后服务器会把公钥连同证书一起发送给客户端，私钥则由服务器自己保存以确保安全。数字证书一般包含以下内容：</p>
+<ol>
+<li>证书所有者的公钥</li>
+<li>证书所有者的专有名称</li>
+<li>证书颁发机构的专有名称</li>
+<li>证书的有效起始日期</li>
+<li>证书的过期日期</li>
+<li>证书数据格式的版本号</li>
+<li>序列号，这是证书颁发机构为该证书分配的唯一标识符</li>
+</ol>
+<p><img src="https://cdn.annevi.cn/image-20210205153627722.png" alt="image-20210205153627722" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20210205153627722.png" class="lozad post-image"></p>
+<p>接下来又有问题了：验证证书中的数字签名需要另一个公钥，那么这个公钥的合法性又该如何保证？该问题可以无限循环下去，岂不是到不了头了？这已经是个社会学问题了。我们为什么把钱存进银行？因为我们相信银行，它是一个可信的机构（虽然也有破产的风险）。跟银行一样，我们需要一个可信的机构来颁发证书和提供公钥，只要是它提供的公钥，我们就相信是合法的。</p>
+<p>这种机构称为认证机构(Certification Authority， CA)。CA就是能够认定”公钥确实属于此人”，并能生成公钥的数字签名的组织或机构。CA有国际性组织和政府设立的组织，也有通过提供认证服务来盈利的组织。</p>
+<p><img src="https://cdn.annevi.cn/image-20210205154525604.png" alt="image-20210205154525604" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20210205154525604.png" class="lozad post-image"></p>
+<h4 id="证书链"><a href="#证书链" class="headerlink" title="证书链"></a>证书链</h4><p>证书链，也称为证书路径，是用于认证实体合法身份的证书列表，具体到 HTTPS 通信中，就是为了验证服务器的合法身份。之所以使用证书链，是为了保证根证书 的安全，中间层可以看做根证书的代理，起到了缓冲的作用。</p>
+<h3 id="从经典问题谈起"><a href="#从经典问题谈起" class="headerlink" title="从经典问题谈起"></a>从经典问题谈起</h3><p>我们从一个经典的问题开始：<strong>当我们在浏览器中输入一个启用了https的域名到我们看到页面回显，发生了什么？</strong></p>
+<p>在以往http的情况下，这个问题的答案相信许多人已经非常清晰了，但是若目标站点启用了https，又会有什么不一样的地方呢？</p>
+<p>带着这个问题，我们重新来分析一下这个“加强版”的经典面试题。</p>
+<h4 id="域名解析"><a href="#域名解析" class="headerlink" title="域名解析"></a>域名解析</h4><p>由于web服务是建立在TCP协议之上的，因此需要使用ip地址来进行通信，而域名解析就是通过域名去DNS服务器查询获取对应的IP的过程，也是这个经典问题的第一步。</p>
+<h4 id="建立TCP连接"><a href="#建立TCP连接" class="headerlink" title="建立TCP连接"></a>建立TCP连接</h4><p>浏览器拿到对应域名的IP地址后，准备向目标服务器发起连接请求，由于我们是向web服务器发起连接，因此是通过TCP协议进行连接的，自然也就有TCP的三次握手建立连接的过程。我们可以通过<code>wireshark</code>抓包来查看这一过程。</p>
+<p><img src="https://cdn.annevi.cn/image-20210209111021113.png" alt="image-20210209111021113" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20210209111021113.png" class="lozad post-image"></p>
+<p>通过设置简单的过滤器，访问<code>https://annevi.cn</code>即可获取到三次握手的过程。我们顺带来具体的看一下。</p>
+<ol>
+<li>首先是客户端向服务器发送一个<code>SYN</code>，表示要求建立连接，同时发送<code>Seq=0</code>,随后客户端进入<code>SYN-SENT</code>阶段。</li>
+<li>服务器端接收到来自客户端的TCP报文之后，结束LISTEN阶段。并返回一段TCP报文，构造一个<code>[SYN ACK]</code>的数据包，同时将ack值设为<code>seq+1</code>。随后服务器端进入SYN-RCVD阶段。</li>
+<li>客户端接收到来自服务器端的确认收到数据的TCP报文之后，明确了从客户端到服务器的数据传输是正常的，结束SYN-SENT阶段。并返回最后一段TCP报文,设置<code>seq+=1</code> ack则等于服务器端数据包的<code>seq+1</code>,随后客户端进入ESTABLISHED阶段。</li>
+</ol>
+<p>完成上述基本步骤后，一个完整的TCP连接就成功建立了</p>
+<p><img src="https://cdn.annevi.cn/861fa058f2da35f8efa70b29bf7c45fd8689.gif" alt="img" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/861fa058f2da35f8efa70b29bf7c45fd8689.gif" class="lozad post-image"></p>
+<h4 id="TLS握手"><a href="#TLS握手" class="headerlink" title="TLS握手*"></a>TLS握手*</h4><p>为了建立安全连接，通信双方在完成TCP的三次握手之后，紧接着就要进行TLS的<strong>四次握手</strong>，TLS握手的<strong>目的</strong>主要是为了：</p>
+<ul>
+<li>商定双方通信所使用的的 TLS 版本 (例如 TLS1.0, 1.2, 1.3等等)；</li>
+<li>确定双方所要使用的密码组合；</li>
+<li>客户端通过服务器的公钥和数字证书上的数字签名验证服务端的身份；</li>
+<li>生成会话密钥，该密钥将用于握手结束后的对称加密。</li>
+</ul>
+<p><img src="https://cdn.annevi.cn/70.png" alt="img" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/70.png" class="lozad post-image"></p>
+<p>下面将介绍一下TLS握手的过程</p>
+<h5 id="Client-Hello"><a href="#Client-Hello" class="headerlink" title="Client Hello"></a>Client Hello</h5><p>客户端生成并发送一段随机字符串以及所支持的加密算法，如图：</p>
+<p><img src="https://cdn.annevi.cn/image-20210214185926765.png" alt="image-20210214185926765" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20210214185926765.png" class="lozad post-image"></p>
+<h5 id="Server-Hello"><a href="#Server-Hello" class="headerlink" title="Server Hello"></a>Server Hello</h5><p>服务器发送”Server Hello”消息对客户端进行回应，该消息包含了<strong>数字证书</strong>，服务器选择的密码组合和”server random”随机字符串</p>
+<p><img src="https://cdn.annevi.cn/image-20210214185419536.png" alt="image-20210214185419536" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20210214185419536.png" class="lozad post-image"></p>
+<h5 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h5><p>客户端对服务器发来的证书进行验证，确保对方的合法身份，验证过程可以细化为以下几个步骤：</p>
+<ol>
+<li>检查数字签名</li>
+<li>验证证书链</li>
+<li>检查证书的有效期</li>
+<li>检查证书的撤回状态 (撤回代表证书已失效)</li>
+</ol>
+<h5 id="Pre-master-secret"><a href="#Pre-master-secret" class="headerlink" title="Pre-master secret"></a>Pre-master secret</h5><p>客户端在前面的步骤中已经获取到了服务端所给予的公钥，因此就可以发送使用这个公钥加密之后的另一个随机字符串”pre-master secret (预主密钥)”，这个字符串是经过服务器的公钥加密过的，只有对应的私钥才能解密。</p>
+<h5 id="解密-Pre-master-secret"><a href="#解密-Pre-master-secret" class="headerlink" title="解密 Pre-master secret"></a>解密 Pre-master secret</h5><p>服务器使用私钥解密<code>Pre-master secret</code>,获取其明文。</p>
+<h5 id="生成共享密钥"><a href="#生成共享密钥" class="headerlink" title="生成共享密钥"></a>生成共享密钥</h5><p>客户端和服务器均使用 <code>client random</code>，<code>server random</code> 和 <code>premaster secret</code>，并通过相同的算法生成相同的共享密钥 <strong>KEY</strong>，用于后面的对称加密传输。</p>
+<h5 id="客户端就绪"><a href="#客户端就绪" class="headerlink" title="客户端就绪"></a><strong>客户端就绪</strong></h5><p>客户端发送经过共享密钥 <strong>KEY</strong>加密过的 <code>finished</code>信号。</p>
+<h5 id="服务端就绪"><a href="#服务端就绪" class="headerlink" title="服务端就绪"></a>服务端就绪</h5><p>服务器发送经过共享密钥 **KEY **加密过的<code>finished</code>信号。</p>
+<h5 id="达成安全通信"><a href="#达成安全通信" class="headerlink" title="达成安全通信"></a><strong>达成安全通信</strong></h5><p>握手完成，双方<strong>使用对称加密</strong>进行安全通信。</p>
+<hr>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>总的来说，TLS的四次握手主要概括如下：</p>
+<p>客户端发出请求，向服务端提供以下信息：</p>
+<ol>
+<li>支持的协议版本，比如 TLS 1.0 版。</li>
+<li>一个客户端生成的随机数，稍后用于生成”对话密钥”。</li>
+<li>支持的加密方法，比如 RSA 公钥加密。</li>
+<li>支持的压缩方法。</li>
+</ol>
+<p>服务器回应以下信息：</p>
+<ol>
+<li>确认使用的加密通信协议版本，比如 TLS 1.0 版本。如果浏览器与服务器支持的版本不一致，服务器关闭加密通信。</li>
+<li>确认使用的加密方法，比如 RSA 公钥加密，返回加密公钥</li>
+<li>服务器证书</li>
+</ol>
+<p>客户端回应</p>
+<ol>
+<li>验证证书的合法性（颁发证书的机构是否合法，证书中包含的网站地址是否与正在访问的地址一致等），如果证书受信任，则浏览器栏里面会显示一个小锁头，否则会给出证书不受信的提示。</li>
+<li>如果证书受信任，或者是用户接受了不受信的证书，浏览器会生成一串随机数的密码，并用证书中提供的公钥加密。</li>
+<li>使用约定好的 HASH 计算握手消息，并使用生成的随机数对消息进行加密，最后将之前生成的所有信息发送给网站。</li>
+</ol>
+<p>服务器</p>
+<ol>
+<li>使用自己的私钥将信息解密取出密码，使用密码解密浏览器发来的握手消息，并验证是否与浏览器发来的一致。</li>
+<li>使用密码加密一段握手消息，发送给浏览器。</li>
+</ol>
+<p><img src="https://cdn.annevi.cn/bVbCCMD.png" alt="SSL : TLS 握手过程" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/bVbCCMD.png" class="lozad post-image"></p>
+<p>可以看到，https 建立连接需要7次握手(TCP 3次 TLS 4次)</p>
+<h2 id="TLS-的安全问题"><a href="#TLS-的安全问题" class="headerlink" title="TLS 的安全问题"></a>TLS 的安全问题</h2><h3 id="OpenSSL心脏滴血漏洞"><a href="#OpenSSL心脏滴血漏洞" class="headerlink" title="OpenSSL心脏滴血漏洞"></a>OpenSSL心脏滴血漏洞</h3><blockquote>
+<p>2014年4月8日，互联网上曝出了严重一个漏洞称为Heartbleed，该漏洞由安全公司Codenomicon和谷歌安全工程师发现。Heartbleed漏洞，造成许任何人在互联网上阅读系统的内存保护脆弱的OpenSSL的软件版本。 这种妥协密钥用于识别服务提供者和加密流量,用户名和密码的和实际的内容。 这允许攻击者窃听通信、窃取数据直接从服务和用户和模拟服务和用户。</p>
+</blockquote>
+<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>OpenSSL 在实现 TLS 和 DTLS 的心跳处理逻辑时，存在编码缺陷。OpenSSL 的心跳处理逻辑没有检测心跳包中的长度字段是否和后续的数据字段相符合，攻击者可以利用这点，构造异常的数据包，来获取心跳数据所在的内存区域的后续数据。这些数据中可能包含了证书私钥、用户名、用户密码、用户邮箱等敏感信息。该漏洞允许攻击者，从内存中读取多达64KB的数据。</p>
+<h4 id="常见场景"><a href="#常见场景" class="headerlink" title="常见场景"></a>常见场景</h4><ul>
+<li>使用了openssl扩展库加密的网络协议</li>
+<li>https</li>
+<li>SSL VPN</li>
+<li>邮件服务器</li>
+</ul>
+<h4 id="测试方案"><a href="#测试方案" class="headerlink" title="测试方案"></a>测试方案</h4><p>nmap</p>
+<pre class="line-numbers language-none"><code class="language-none">nmap -sV -p 443 --script ssl-heartbleed.nse [Target]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><a target="_blank" rel="noopener" href="https://filippo.io/Heartbleed/">https://filippo.io/Heartbleed/</a></p>
+<p><a target="_blank" rel="noopener" href="http://wangzhan.360.cn/heartbleed/">http://wangzhan.360.cn/heartbleed/</a></p>
+<h3 id="Downgrade（降级攻击）"><a href="#Downgrade（降级攻击）" class="headerlink" title="Downgrade（降级攻击）"></a>Downgrade（降级攻击）</h3><p>降级攻击是一种对计算机系统或者通信协议的攻击，在降级攻击中，攻击者故意使系统放弃新式、安全性高的工作方式，反而使用为向下兼容而准备的老式、安全性差的工作方式，降级攻击常被用于中间人攻击，讲加密的通信协议安全性大幅削弱，得以进行原本不可能做到的攻击。 在现代的回退防御中，使用单独的信号套件来指示自愿降级行为，需要理解该信号并支持更高协议版本的服务器来终止协商，该套件是 TLS_FALLBACK_SCSV(0x5600)</p>
+<h3 id="MITM（中间人攻击）"><a href="#MITM（中间人攻击）" class="headerlink" title="MITM（中间人攻击）"></a>MITM（中间人攻击）</h3><p>MITM(Man-in-the-MiddleAttack) ，是指攻击者与通讯的两端分别创建独立的联系，并交换其所有收到的数据，使通讯的两端认为他们正在通过一个私密的连接与对方直接对话，但事实上整个对话都被攻击者完全控制，在中间人攻击中，攻击者可以拦截通讯双方的通话并插入新的内容。一个中间人攻击能成功的前提条件是攻击者能够将自己伪装成每个参与会话的终端，并且不被其他终端识破。</p>
+<h3 id="BEAST-野兽攻击）"><a href="#BEAST-野兽攻击）" class="headerlink" title="BEAST (野兽攻击）"></a>BEAST (野兽攻击）</h3><p>BEAST(CVE-2011-3389) BEAST是一种明文攻击，通过从SSL/TLS加密的会话中获取受害者的COOKIE值（通过进行一次会话劫持攻击），进而篡改一个加密算法的 CBC（密码块链）的模式以实现攻击目录，其主要针对TLS1.0和更早版本的协议中的对称加密算法CBC模式。</p>
+<h3 id="CRIME（罪恶攻击）"><a href="#CRIME（罪恶攻击）" class="headerlink" title="CRIME（罪恶攻击）"></a>CRIME（罪恶攻击）</h3><p>CRIME(CVE-2012-4929)，全称Compression Ratio Info-leak Made Easy，这是一种因SSL压缩造成的安全隐患，通过它可窃取启用数据压缩特性的HTTPS或SPDY协议传输的私密Web Cookie。在成功读取身份验证Cookie后，攻击者可以实行会话劫持和发动进一步攻击。</p>
+<p>SSL 压缩在下述版本是默认关闭的： nginx 1.1.6及更高/1.0.9及更高（如果使用了 OpenSSL 1.0.0及更高）， nginx 1.3.2及更高/1.2.2及更高（如果使用较旧版本的 OpenSSL）。</p>
+<p>如果你使用一个早期版本的 nginx 或 OpenSSL，而且你的发行版没有向后移植该选项，那么你需要重新编译没有一个 ZLIB 支持的 OpenSSL。这会禁止 OpenSSL 使用 DEFLATE 压缩方式。如果你禁用了这个，你仍然可以使用常规的 HTML DEFLATE 压缩。</p>
+<h3 id="POODLE漏洞（卷毛狗攻击）"><a href="#POODLE漏洞（卷毛狗攻击）" class="headerlink" title="POODLE漏洞（卷毛狗攻击）"></a>POODLE漏洞（卷毛狗攻击）</h3><p>2014年10月14号由Google发现的POODLE漏洞，全称是Padding Oracle On Downloaded Legacy Encryption vulnerability，又被称为“贵宾犬攻击”（CVE-2014-3566），POODLE漏洞只对CBC模式的明文进行了身份验证，但是没有对填充字节进行完整性验证，攻击者窃取采用SSL3.0版加密通信过程中的内容，对填充字节修改并且利用预置填充来恢复加密内容，以达到攻击目的。</p>
+<h3 id="TLS-POODLE（TLS卷毛狗攻击）"><a href="#TLS-POODLE（TLS卷毛狗攻击）" class="headerlink" title="TLS POODLE（TLS卷毛狗攻击）"></a>TLS POODLE（TLS卷毛狗攻击）</h3><p>TLS POODLE(CVE-2014-8730) 该漏洞的原理和POODLE漏洞的原理一致，但不是SSL3协议。由于TLS填充是SSLv3的一个子集，因此可以重新使用针对TLS的POODLE攻击。TLS对于它的填充格式是非常严格的，但是一些TLS实现在解密之后不执行填充结构的检查。即使使用TLS也不会容易受到POODLE攻击的影响。</p>
+<h3 id="CCS"><a href="#CCS" class="headerlink" title="CCS"></a>CCS</h3><p>CCS(CVE-2014-0224) 全称openssl MITM CCS injection attack，Openssl 0.9.8za之前的版本、1.0.0m之前的以及1.0.1h之前的openssl没有适当的限制ChangeCipherSpec信息的处理，这允许中间人攻击者在通信之间使用0长度的主密钥。</p>
+<h3 id="FREAK"><a href="#FREAK" class="headerlink" title="FREAK"></a>FREAK</h3><p>FREAK(CVE-2015-0204) 客户端会在一个全安全强度的RSA握手过程中接受使用弱安全强度的出口RSA密钥，其中关键在于客户端并没有允许协商任何出口级别的RSA密码套件。</p>
+<h3 id="DROWN（溺水攻击-溺亡攻击）"><a href="#DROWN（溺水攻击-溺亡攻击）" class="headerlink" title="DROWN（溺水攻击/溺亡攻击）"></a>DROWN（溺水攻击/溺亡攻击）</h3><p>2016年3月发现的针对TLS的新漏洞攻击——DROWN（Decrypting RSA with Obsolete and Weakened eNcryption，CVE-2016-0800），也即利用过时的、弱化的一种RSA加密算法来解密破解TLS协议中被该算法加密的会话密钥。 具体说来，DROWN漏洞可以利用过时的SSLv2协议来解密与之共享相同RSA私钥的TLS协议所保护的流量。 DROWN攻击依赖于SSLv2协议的设计缺陷以及知名的Bleichenbacher攻击。</p>
+<p>通常检查以下两点服务器的配置</p>
+<ul>
+<li>服务器允许SSL2连接，需要将其关闭。</li>
+<li>私钥同时用于允许SSL2连接的其他服务器。例如，Web服务器和邮件服务器上使用相同的私钥和证书，如果邮件服务器支持SSL2，即使web服务器不支持SSL2，攻击者可以利用邮件服务器来破坏与web服务器的TLS连接。</li>
+</ul>
+<h3 id="Openssl-Padding-Oracle"><a href="#Openssl-Padding-Oracle" class="headerlink" title="Openssl Padding Oracle"></a>Openssl Padding Oracle</h3><p>Openssl Padding Oracle(CVE-2016-2107) openssl 1.0.1t到openssl 1.0.2h之前没有考虑某些填充检查期间的内存分配，这允许远程攻击者通过针对AES CBC会话的padding-oracle攻击来获取敏感的明文信息。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000012731888">https://segmentfault.com/a/1190000012731888</a></li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000021559557">https://segmentfault.com/a/1190000021559557</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/22142170">https://zhuanlan.zhihu.com/p/22142170</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904089495535624#heading-14">https://juejin.cn/post/6844904089495535624#heading-14</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/22917510">https://zhuanlan.zhihu.com/p/22917510</a></li>
+<li><a target="_blank" rel="noopener" href="https://payloads.online/archivers/2018-04-27/5">https://payloads.online/archivers/2018-04-27/5</a></li>
+</ul>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            Switch
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://me.liki.link/20210812/HTTPS-%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/">
+            https://me.liki.link/20210812/HTTPS-%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/20210812/Web-%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">上一篇</div>
+          
+            <div class="nav-title">Web 安全基础知识思维导图 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/20210503/DEFCON-2021-Quals-threefactooorx/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">下一篇</div>
+          
+            <div class="nav-title">DEFCON 2021 Quals threefactooorx </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+  <div 
+    class="card card-content comment-card" 
+    style="margin-top: 16px;">
+    <div class="comment-card-title">评论</div>
+    
+  <div id="gitalk-container"></div>
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+  
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+  
+<script src="/js/lib/md5.min.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: '032224fa703e5abb2a29',
+      clientSecret: '273bb31dd3a59b6a1ebc4b4e151feb7eb86f801e',
+      repo: 'Liki4.github.io',
+      owner: 'Liki4',
+      admin: ["Liki4"],
+      id: md5(location.pathname),
+      distractionFreeMode: false,
+      language: 'navigator.language || navigator.userLanguage',
+      labels: [],
+      perPage: 10
+    })
+
+    gitalk.render('gitalk-container')
+  </script>
+
+  </div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>目录
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFhttps%EF%BC%9F"><span class="toc-text">什么是https？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81https%EF%BC%9F"><span class="toc-text">为什么需要https？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#https%E5%85%B7%E4%BD%93%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="toc-text">https具体工作过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-text">基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="toc-text">对称加密</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="toc-text">非对称加密</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="toc-text">数字签名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6"><span class="toc-text">数字证书</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%81%E4%B9%A6%E9%93%BE"><span class="toc-text">证书链</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E7%BB%8F%E5%85%B8%E9%97%AE%E9%A2%98%E8%B0%88%E8%B5%B7"><span class="toc-text">从经典问题谈起</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90"><span class="toc-text">域名解析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8BTCP%E8%BF%9E%E6%8E%A5"><span class="toc-text">建立TCP连接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TLS%E6%8F%A1%E6%89%8B"><span class="toc-text">TLS握手*</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Client-Hello"><span class="toc-text">Client Hello</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Server-Hello"><span class="toc-text">Server Hello</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81"><span class="toc-text">验证</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Pre-master-secret"><span class="toc-text">Pre-master secret</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%A7%A3%E5%AF%86-Pre-master-secret"><span class="toc-text">解密 Pre-master secret</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E5%85%B1%E4%BA%AB%E5%AF%86%E9%92%A5"><span class="toc-text">生成共享密钥</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B0%B1%E7%BB%AA"><span class="toc-text">客户端就绪</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%B0%B1%E7%BB%AA"><span class="toc-text">服务端就绪</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%BE%BE%E6%88%90%E5%AE%89%E5%85%A8%E9%80%9A%E4%BF%A1"><span class="toc-text">达成安全通信</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TLS-%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="toc-text">TLS 的安全问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenSSL%E5%BF%83%E8%84%8F%E6%BB%B4%E8%A1%80%E6%BC%8F%E6%B4%9E"><span class="toc-text">OpenSSL心脏滴血漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E5%9C%BA%E6%99%AF"><span class="toc-text">常见场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%96%B9%E6%A1%88"><span class="toc-text">测试方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Downgrade%EF%BC%88%E9%99%8D%E7%BA%A7%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">Downgrade（降级攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MITM%EF%BC%88%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">MITM（中间人攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BEAST-%E9%87%8E%E5%85%BD%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">BEAST (野兽攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CRIME%EF%BC%88%E7%BD%AA%E6%81%B6%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">CRIME（罪恶攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POODLE%E6%BC%8F%E6%B4%9E%EF%BC%88%E5%8D%B7%E6%AF%9B%E7%8B%97%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">POODLE漏洞（卷毛狗攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TLS-POODLE%EF%BC%88TLS%E5%8D%B7%E6%AF%9B%E7%8B%97%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">TLS POODLE（TLS卷毛狗攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CCS"><span class="toc-text">CCS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FREAK"><span class="toc-text">FREAK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DROWN%EF%BC%88%E6%BA%BA%E6%B0%B4%E6%94%BB%E5%87%BB-%E6%BA%BA%E4%BA%A1%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">DROWN（溺水攻击&#x2F;溺亡攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Openssl-Padding-Oracle"><span class="toc-text">Openssl Padding Oracle</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol></li></ol>
+</div></main>
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/Liki4.jpg" 
+    class="author-img" 
+    alt="author avatar">
+
+<p class="author-name">Switch</p>
+<p class="author-description">HDU | Vidar-Team | Web</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>8</span>
+    <span>文章</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>0</span>
+    <span>分类</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>2</span>
+    <span>标签</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/Liki4">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:chrislikaiyuan@outlook.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>目录
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFhttps%EF%BC%9F"><span class="toc-text">什么是https？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81https%EF%BC%9F"><span class="toc-text">为什么需要https？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#https%E5%85%B7%E4%BD%93%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="toc-text">https具体工作过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-text">基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="toc-text">对称加密</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="toc-text">非对称加密</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="toc-text">数字签名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6"><span class="toc-text">数字证书</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%81%E4%B9%A6%E9%93%BE"><span class="toc-text">证书链</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E7%BB%8F%E5%85%B8%E9%97%AE%E9%A2%98%E8%B0%88%E8%B5%B7"><span class="toc-text">从经典问题谈起</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90"><span class="toc-text">域名解析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8BTCP%E8%BF%9E%E6%8E%A5"><span class="toc-text">建立TCP连接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TLS%E6%8F%A1%E6%89%8B"><span class="toc-text">TLS握手*</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Client-Hello"><span class="toc-text">Client Hello</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Server-Hello"><span class="toc-text">Server Hello</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81"><span class="toc-text">验证</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Pre-master-secret"><span class="toc-text">Pre-master secret</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%A7%A3%E5%AF%86-Pre-master-secret"><span class="toc-text">解密 Pre-master secret</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E5%85%B1%E4%BA%AB%E5%AF%86%E9%92%A5"><span class="toc-text">生成共享密钥</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B0%B1%E7%BB%AA"><span class="toc-text">客户端就绪</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%B0%B1%E7%BB%AA"><span class="toc-text">服务端就绪</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%BE%BE%E6%88%90%E5%AE%89%E5%85%A8%E9%80%9A%E4%BF%A1"><span class="toc-text">达成安全通信</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TLS-%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="toc-text">TLS 的安全问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenSSL%E5%BF%83%E8%84%8F%E6%BB%B4%E8%A1%80%E6%BC%8F%E6%B4%9E"><span class="toc-text">OpenSSL心脏滴血漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E5%9C%BA%E6%99%AF"><span class="toc-text">常见场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%96%B9%E6%A1%88"><span class="toc-text">测试方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Downgrade%EF%BC%88%E9%99%8D%E7%BA%A7%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">Downgrade（降级攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MITM%EF%BC%88%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">MITM（中间人攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BEAST-%E9%87%8E%E5%85%BD%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">BEAST (野兽攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CRIME%EF%BC%88%E7%BD%AA%E6%81%B6%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">CRIME（罪恶攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POODLE%E6%BC%8F%E6%B4%9E%EF%BC%88%E5%8D%B7%E6%AF%9B%E7%8B%97%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">POODLE漏洞（卷毛狗攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TLS-POODLE%EF%BC%88TLS%E5%8D%B7%E6%AF%9B%E7%8B%97%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">TLS POODLE（TLS卷毛狗攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CCS"><span class="toc-text">CCS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FREAK"><span class="toc-text">FREAK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DROWN%EF%BC%88%E6%BA%BA%E6%B0%B4%E6%94%BB%E5%87%BB-%E6%BA%BA%E4%BA%A1%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">DROWN（溺水攻击&#x2F;溺亡攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Openssl-Padding-Oracle"><span class="toc-text">Openssl Padding Oracle</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>分类
+  </div>
+  <div class="categories-list">
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>热门标签
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/CTF-WriteUp/" 
+        title="CTF WriteUp">
+        <div class="tags-list-item">CTF WriteUp</div>
+      </a>
+    
+      <a 
+        href="/tags/dn42/" 
+        title="dn42">
+        <div class="tags-list-item">dn42</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>目录
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFhttps%EF%BC%9F"><span class="toc-text">什么是https？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81https%EF%BC%9F"><span class="toc-text">为什么需要https？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#https%E5%85%B7%E4%BD%93%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="toc-text">https具体工作过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-text">基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="toc-text">对称加密</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="toc-text">非对称加密</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="toc-text">数字签名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6"><span class="toc-text">数字证书</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%81%E4%B9%A6%E9%93%BE"><span class="toc-text">证书链</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8E%E7%BB%8F%E5%85%B8%E9%97%AE%E9%A2%98%E8%B0%88%E8%B5%B7"><span class="toc-text">从经典问题谈起</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90"><span class="toc-text">域名解析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8BTCP%E8%BF%9E%E6%8E%A5"><span class="toc-text">建立TCP连接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TLS%E6%8F%A1%E6%89%8B"><span class="toc-text">TLS握手*</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Client-Hello"><span class="toc-text">Client Hello</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Server-Hello"><span class="toc-text">Server Hello</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81"><span class="toc-text">验证</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Pre-master-secret"><span class="toc-text">Pre-master secret</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%A7%A3%E5%AF%86-Pre-master-secret"><span class="toc-text">解密 Pre-master secret</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E5%85%B1%E4%BA%AB%E5%AF%86%E9%92%A5"><span class="toc-text">生成共享密钥</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%B0%B1%E7%BB%AA"><span class="toc-text">客户端就绪</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%B0%B1%E7%BB%AA"><span class="toc-text">服务端就绪</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%BE%BE%E6%88%90%E5%AE%89%E5%85%A8%E9%80%9A%E4%BF%A1"><span class="toc-text">达成安全通信</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TLS-%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="toc-text">TLS 的安全问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenSSL%E5%BF%83%E8%84%8F%E6%BB%B4%E8%A1%80%E6%BC%8F%E6%B4%9E"><span class="toc-text">OpenSSL心脏滴血漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E5%9C%BA%E6%99%AF"><span class="toc-text">常见场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%96%B9%E6%A1%88"><span class="toc-text">测试方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Downgrade%EF%BC%88%E9%99%8D%E7%BA%A7%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">Downgrade（降级攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MITM%EF%BC%88%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">MITM（中间人攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BEAST-%E9%87%8E%E5%85%BD%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">BEAST (野兽攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CRIME%EF%BC%88%E7%BD%AA%E6%81%B6%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">CRIME（罪恶攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POODLE%E6%BC%8F%E6%B4%9E%EF%BC%88%E5%8D%B7%E6%AF%9B%E7%8B%97%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">POODLE漏洞（卷毛狗攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TLS-POODLE%EF%BC%88TLS%E5%8D%B7%E6%AF%9B%E7%8B%97%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">TLS POODLE（TLS卷毛狗攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CCS"><span class="toc-text">CCS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FREAK"><span class="toc-text">FREAK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DROWN%EF%BC%88%E6%BA%BA%E6%B0%B4%E6%94%BB%E5%87%BB-%E6%BA%BA%E4%BA%A1%E6%94%BB%E5%87%BB%EF%BC%89"><span class="toc-text">DROWN（溺水攻击&#x2F;溺亡攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Openssl-Padding-Oracle"><span class="toc-text">Openssl Padding Oracle</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>最近文章
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2077-03-02</div>
+        <a href="/20770302/DN42/"><div class="recent-posts-item-content">DN42</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-10-18</div>
+        <a href="/20211018/ByteCTF-2021-Web-WP/"><div class="recent-posts-item-content">ByteCTF 2021 Web WP</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-08-12</div>
+        <a href="/20210812/Web-%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/"><div class="recent-posts-item-content">Web 安全基础知识思维导图</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-08-12</div>
+        <a href="/20210812/HTTPS-%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/"><div class="recent-posts-item-content">HTTPS 协议学习</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2020 -
+          
+          2021
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          Liki4
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+</footer> 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton" 
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+     
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>

