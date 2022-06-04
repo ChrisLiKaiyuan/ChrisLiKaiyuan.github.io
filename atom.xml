@@ -6,7 +6,7 @@
   <link href="https://me.liki.link/atom.xml" rel="self"/>
   
   <link href="https://me.liki.link/"/>
-  <updated>2022-06-04T03:41:02.370Z</updated>
+  <updated>2022-06-04T03:44:11.675Z</updated>
   <id>https://me.liki.link/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="https://me.liki.link/20770927/DN42/"/>
     <id>https://me.liki.link/20770927/DN42/</id>
     <published>2077-09-27T04:00:00.000Z</published>
-    <updated>2022-06-04T03:41:02.370Z</updated>
+    <updated>2022-06-04T03:44:11.675Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="DN42"><a href="#DN42" class="headerlink" title="DN42"></a>DN42</h1><h2 id="Info"><a href="#Info" class="headerlink" title="Info"></a>Info</h2><pre class="line-numbers language-none"><code class="language-none">My Informations:ASN:        4242420927LV1 - Las Vegas, US, BuyVMTunnel:     WireGuard&#x2F;GRE etc.Clearnet-IPv4:       199.19.226.83DN42Internal-IPv4:     172.21.77.33Internal-IPv6:     fd80:96c2:e41e:3dcc::1Link-Local IPv6:   fe80::0927Multiprotocol BGP Support: Yes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+    <content type="html"><![CDATA[<h1 id="DN42"><a href="#DN42" class="headerlink" title="DN42"></a>DN42</h1><h2 id="Info"><a href="#Info" class="headerlink" title="Info"></a>Info</h2><pre class="line-numbers language-none"><code class="language-none">My Informations:ASN:        4242420927LV1 - Las Vegas, US, BuyVM | VyOSTunnel:     WireGuard&#x2F;GRE etc.Clearnet-IPv4:       199.19.226.83DN42Internal-IPv4:     172.21.77.33Internal-IPv6:     fd80:96c2:e41e:3dcc::1Link-Local IPv6:   fe80::0927MBGP Support:      Yes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
     
     
       
