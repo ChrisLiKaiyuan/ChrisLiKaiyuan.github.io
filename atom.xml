@@ -6,7 +6,7 @@
   <link href="https://me.liki.link/atom.xml" rel="self"/>
   
   <link href="https://me.liki.link/"/>
-  <updated>2021-10-18T03:09:16.695Z</updated>
+  <updated>2022-06-04T03:41:02.370Z</updated>
   <id>https://me.liki.link/</id>
   
   <author>
@@ -18,17 +18,17 @@
   
   <entry>
     <title>DN42</title>
-    <link href="https://me.liki.link/20770302/DN42/"/>
-    <id>https://me.liki.link/20770302/DN42/</id>
-    <published>2077-03-02T04:00:00.000Z</published>
-    <updated>2021-10-18T03:09:16.695Z</updated>
+    <link href="https://me.liki.link/20770927/DN42/"/>
+    <id>https://me.liki.link/20770927/DN42/</id>
+    <published>2077-09-27T04:00:00.000Z</published>
+    <updated>2022-06-04T03:41:02.370Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="DN42"><a href="#DN42" class="headerlink" title="DN42"></a>DN42</h1><h2 id="About"><a href="#About" class="headerlink" title="About"></a>About</h2><p>Liki4</p><p>只是 DN42 的一个小玩家，</p><p>用来 peer 的小鸡是一台 BuyVM 的 VPS，</p><p>以后应该也会一直续费下去，</p><p>因为系统暂时是 RouterOS v6，</p><p>所以没有 WireGuard，</p><p>但是可以支持各种各样的隧道，</p><p>为了方便就直接用 GRE/Plain 来 peer 了，</p><p>等到 RouterOS v7 发布正式版就更新，</p><p>就可以用 WireGuard 来 peer 了。</p><h2 id="Info"><a href="#Info" class="headerlink" title="Info"></a>Info</h2><pre class="line-numbers language-none"><code class="language-none">My Informations:ASN:        4242420927LV1 - Las Vegas, US, BuyVMTunnel:     GRE&#x2F;PlainIPv4:       199.19.226.83MTU:        1476DN42IPv4:     172.21.77.33IPv6:     fd80:96c2:e41e:3dcc::1Link-Local Support: NoMultiprotocol BGP Support: Yes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+    <content type="html"><![CDATA[<h1 id="DN42"><a href="#DN42" class="headerlink" title="DN42"></a>DN42</h1><h2 id="Info"><a href="#Info" class="headerlink" title="Info"></a>Info</h2><pre class="line-numbers language-none"><code class="language-none">My Informations:ASN:        4242420927LV1 - Las Vegas, US, BuyVMTunnel:     WireGuard&#x2F;GRE etc.Clearnet-IPv4:       199.19.226.83DN42Internal-IPv4:     172.21.77.33Internal-IPv6:     fd80:96c2:e41e:3dcc::1Link-Local IPv6:   fe80::0927Multiprotocol BGP Support: Yes<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
     
     
       
       
-    <summary type="html">&lt;h1 id=&quot;DN42&quot;&gt;&lt;a href=&quot;#DN42&quot; class=&quot;headerlink&quot; title=&quot;DN42&quot;&gt;&lt;/a&gt;DN42&lt;/h1&gt;&lt;h2 id=&quot;About&quot;&gt;&lt;a href=&quot;#About&quot; class=&quot;headerlink&quot; title=&quot;About&quot;&gt;</summary>
+    <summary type="html">&lt;h1 id=&quot;DN42&quot;&gt;&lt;a href=&quot;#DN42&quot; class=&quot;headerlink&quot; title=&quot;DN42&quot;&gt;&lt;/a&gt;DN42&lt;/h1&gt;&lt;h2 id=&quot;Info&quot;&gt;&lt;a href=&quot;#Info&quot; class=&quot;headerlink&quot; title=&quot;Info&quot;&gt;&lt;/a</summary>
       
     
     

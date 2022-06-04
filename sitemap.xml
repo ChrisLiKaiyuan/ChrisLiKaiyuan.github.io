@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://me.liki.link/20770927/DN42/</loc>
+    
+    <lastmod>2022-06-04</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://me.liki.link/20211018/ByteCTF-2021-Web-WP/</loc>
     
     <lastmod>2021-10-18</lastmod>
@@ -37,13 +44,6 @@
   </url>
   
   <url>
-    <loc>https://me.liki.link/20770302/DN42/</loc>
-    
-    <lastmod>2021-10-18</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://me.liki.link/about/</loc>
     
     <lastmod>2021-10-18</lastmod>
@@ -67,7 +67,7 @@
 
   <url>
     <loc>https://me.liki.link/</loc>
-    <lastmod>2021-10-18</lastmod>
+    <lastmod>2022-06-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -75,14 +75,14 @@
   
   <url>
     <loc>https://me.liki.link/tags/CTF-WriteUp/</loc>
-    <lastmod>2021-10-18</lastmod>
+    <lastmod>2022-06-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://me.liki.link/tags/dn42/</loc>
-    <lastmod>2021-10-18</lastmod>
+    <lastmod>2022-06-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
